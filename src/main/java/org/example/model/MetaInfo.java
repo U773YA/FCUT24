@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetaInfo {
     private double metaRating;
+    @JsonProperty("chemstyleId")
     private Integer chemstyleId;
     private String archetypeId;
     private Integer chemistry;

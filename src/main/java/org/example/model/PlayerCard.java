@@ -10,7 +10,7 @@ public class PlayerCard {
     private Integer easySbcId;
     private String name;
     private Integer rating;
-    private Integer evoId;
+    private String evoId;
     private String nation;
     private Integer id;
     private Integer clubId;
@@ -50,11 +50,11 @@ public class PlayerCard {
         this.rating = rating;
     }
 
-    public Integer getEvoId() {
+    public String getEvoId() {
         return evoId;
     }
 
-    public void setEvoId(Integer evoId) {
+    public void setEvoId(String evoId) {
         this.evoId = evoId;
     }
 

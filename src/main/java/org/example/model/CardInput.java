@@ -6,17 +6,17 @@ public class CardInput {
     private final Integer easySbcId;
     private final String name;
     private final Integer rating;
-    private final Integer evoId;
+    private final String evoId;
 
     public CardInput(Integer futBinId, Integer easySbcId, String name, Integer rating) {
         this.futBinId = futBinId;
         this.easySbcId = easySbcId;
         this.name = name;
         this.rating = rating;
-        this.evoId = 0;
+        this.evoId = "";
     }
 
-    public CardInput(Integer futBinId, Integer easySbcId, String name, Integer rating, Integer evoId) {
+    public CardInput(Integer futBinId, Integer easySbcId, String name, Integer rating, String evoId) {
         this.futBinId = futBinId;
         this.easySbcId = easySbcId;
         this.name = name;
@@ -40,7 +40,7 @@ public class CardInput {
         return rating;
     }
 
-    public Integer getEvoId() {
+    public String getEvoId() {
         return evoId;
     }
 }
