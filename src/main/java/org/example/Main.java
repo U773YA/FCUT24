@@ -379,6 +379,11 @@ public class Main extends InputData {
             nationMap.merge(playerCard.getNation(), 1, Integer::sum);
             if (playerCard.getClubId().equals(112658)) {   // ICON club id = 112658
                 nationMap.merge(playerCard.getNation(), 1, Integer::sum);
+                for (Map.Entry<Integer, Integer> league : leagueMap.entrySet()) {
+                    int key = league.getKey();
+                    int value = league.getValue();
+                    leagueMap.put(key, value + 1);
+                }
             }
             leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
             if (playerCard.getClubId().equals(114605) || playerCard.getName().contains("PREMIUM")) {  // Hero club id = 114605
