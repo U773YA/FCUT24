@@ -98,6 +98,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(423, 230621, "DONNARUMMA", 87));
         playerCardInputList.add(new CardInput(449, 215698, "MAIGNAN", 87));
 
+        playerCardInputList.add(new CardInput(19908, 50532536, "DANILO PEREIRA FUT CENTURIONS", 86));
         playerCardInputList.add(new CardInput(303, 235243, "DE LIGT", 86));
         playerCardInputList.add(new CardInput(404, 237197, "GEYORO", 86));
         playerCardInputList.add(new CardInput(228, 182521, "KROOS", 86));
@@ -118,6 +119,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(262, 209499, "FABINHO", 84));
         playerCardInputList.add(new CardInput(2521, 232580, "GABRIEL", 84));
         playerCardInputList.add(new CardInput(2522, 230666, "GABRIEL JESUS", 84));
+        playerCardInputList.add(new CardInput(313, 210035, "GRIMALDO", 84));
         playerCardInputList.add(new CardInput(314, 185122, "GULACSI", 84));
         playerCardInputList.add(new CardInput(415, 220814, "HERNANDEZ", 84));
         playerCardInputList.add(new CardInput(117, 213648, "HOJBJERG", 84));
@@ -182,15 +184,19 @@ public class InputData {
         playerCardInputList.add(new CardInput(625, 244369, "TSYGANKOV", 82));
         playerCardInputList.add(new CardInput(630, 212188, "WERNER", 82));
         playerCardInputList.add(new CardInput(628, 233751, "VAN DE DONK", 82));
+        playerCardInputList.add(new CardInput(124, 240091, "VICARIO", 82));
 
         playerCardInputList.add(new CardInput(90, 229984, "CHILWELL", 81));
         playerCardInputList.add(new CardInput(658, 199304, "DANILO", 81));
         playerCardInputList.add(new CardInput(717, 226271, "FABIAN RUIZ", 81));
         playerCardInputList.add(new CardInput(672, 239791, "GLAS", 81));
+        playerCardInputList.add(new CardInput(685, 179645, "KJAER", 81));
         playerCardInputList.add(new CardInput(694, 226316, "LEROUX", 81));
+        playerCardInputList.add(new CardInput(123, 226226, "LO CELSO", 81));
         playerCardInputList.add(new CardInput(702, 267272, "MILAZZO", 81));
         playerCardInputList.add(new CardInput(696, 120533, "PEPE", 81));
         playerCardInputList.add(new CardInput(715, 168651, "RAKITIC", 81));
+        playerCardInputList.add(new CardInput(422, 253306, "UGARTE", 81));
     }
 
     protected static void populateTactics() {
