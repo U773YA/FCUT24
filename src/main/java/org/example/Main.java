@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,7 @@ public class Main extends InputData {
     public static Map<Integer, PlayerCard> dbPlayerCardMap = new HashMap<>();
     public static Map<Role, List<CardScore>> roleScoreMap = new HashMap<>();
     private static List<VariationTeam> possibleTeams = new ArrayList<>();
+    private static List<VariationTeam> almightyTeams = new ArrayList<>();
     private static final Map<String, List<Manager>> nationManagerMap = new HashMap<>();
     private static final Map<Integer, List<Manager>> leagueManagerMap = new HashMap<>();
 
@@ -130,8 +132,29 @@ public class Main extends InputData {
 
         for (List<CardScore> list : roleScoreMap.values()) {
             Role role = list.get(0).getRole();
+
+            // Extract card IDs from the mandatory players
+            List<CardScore> finalList = list;
+            List<Integer> mandatoryCardIds = mandatoryPlayers.stream()
+                    .filter(p -> finalList.stream().map(CardScore::getCardId).anyMatch(cardId -> Objects.equals(cardId, p)))
+                    .toList();
+
+            // Filter mandatory scores
+            List<CardScore> mandatoryScores = list.stream()
+                    .filter(score -> mandatoryCardIds.contains(score.getCardId()))
+                    .toList();
+
+            // Sort the original list by score in descending order and take the top 5
             list.sort(Comparator.comparing(CardScore::getScore).reversed());
-            list = list.subList(0, 5);
+            list = list.subList(0, Math.min(5, list.size()));
+
+            // Add mandatory scores if they are not already in the top 5
+            for (CardScore m : mandatoryScores) {
+                if (list.stream().noneMatch(l -> l.getCardId() == m.getCardId())) {
+                    list.add(m);
+                }
+            }
+
             roleScoreMap.put(role, list);
         }
         System.out.println("\nBest players in each role: ");
@@ -197,6 +220,39 @@ public class Main extends InputData {
         ) {
             build(tactic);
         }
+
+        almightyTeams = almightyTeams.stream().sorted(Comparator.comparing(VariationTeam::getTotalRating).reversed())
+                .limit(6)
+                .collect(Collectors.toList());
+        System.out.println("Almighty teams: ");
+        for (VariationTeam variationTeam : almightyTeams) {
+//            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
+            System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
+            System.out.print(variationTeam.getChemistry() + "\t");
+            System.out.print(variationTeam.getTotalRating() + "\t");
+            System.out.println(variationTeam.getScore());
+        }
+
+        Set<Integer> playersConsidered = new HashSet<>(playerPositionMap.values()
+                .stream()
+                .flatMap(List::stream)
+                .toList());
+        System.out.println("\nImportant players: ");
+        playersConsidered.forEach(player -> {
+            PlayerCard playerCard = playerCardMap.get(player);
+            System.out.print(playerCard.getName() + " ");
+            System.out.println(playerCard.getRating() + " ");
+        });
+        System.out.println("\nPlayers that can be thrown away: ");
+        List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
+                .filter(p -> !playersConsidered.contains(p.getKey()))
+                .map(Map.Entry::getValue)
+                .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
+                .toList();
+        playersToBeThrown.forEach(playerCard -> {
+            System.out.print(playerCard.getName() + " ");
+            System.out.println(playerCard.getRating() + " ");
+        });
     }
 
     public static void build(Tactic tacticToBeConsidered) {
@@ -237,6 +293,10 @@ public class Main extends InputData {
                 .limit(10)
                 .collect(Collectors.toList());
 
+        if (!sortedTeamsByScore.isEmpty()) {
+            almightyTeams.add(sortedTeamsByScore.get(0));
+        }
+
         for (VariationTeam variationTeam : sortedTeamsByScore) {
 //            variationTeam.setSubstitutes(tacticList, playerPositionMap, playerCardMap);
             System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
@@ -260,10 +320,15 @@ public class Main extends InputData {
                 System.out.println("Percentage completed : " + percentage + " VariationTeams : " + teamCounter + " " +
                         "ETA: " + calculateETA(percentage,startTime) +" s");
             }
-            List<Integer> teamPlayerCardIds = team.getPlayers().stream().map(p -> p.getPlayerId() % 100000).toList();
+            List<Integer> teamPlayerCardIds = team.getPlayers().stream().map(TeamPlayer::getPlayerId).toList();
             if (!mandatoryPlayers.isEmpty() && !new HashSet<>(teamPlayerCardIds).containsAll(mandatoryPlayers)) {
                 return;
             }
+//            List<String> countryList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getNation()).toList();
+//            List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p).getLeagueId()).toList();
+//            if (Collections.frequency(countryList, "England") < 3) {
+//                return;
+//            }
             validateTeams(team);
             return;
         }
@@ -379,11 +444,7 @@ public class Main extends InputData {
             nationMap.merge(playerCard.getNation(), 1, Integer::sum);
             if (playerCard.getClubId().equals(112658)) {   // ICON club id = 112658
                 nationMap.merge(playerCard.getNation(), 1, Integer::sum);
-                for (Map.Entry<Integer, Integer> league : leagueMap.entrySet()) {
-                    int key = league.getKey();
-                    int value = league.getValue();
-                    leagueMap.put(key, value + 1);
-                }
+                leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + 1));
             }
             leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
             if (playerCard.getClubId().equals(114605) || playerCard.getName().contains("PREMIUM")) {  // Hero club id = 114605

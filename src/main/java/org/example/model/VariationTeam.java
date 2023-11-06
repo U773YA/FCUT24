@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.enums.Position;
+import org.example.enums.Role;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.example.enums.Position.GK;
 
 public class VariationTeam {
     private Integer tactic;
@@ -110,28 +113,79 @@ public class VariationTeam {
         return teamString;
     }
 
-//    public void setSubstitutes(List<Tactic> tacticList, Map<Position, List<CardScore>> playerPositionMap, Map<Integer, PlayerCard> playerCardMap) {
-//        StringBuilder key = new StringBuilder();
-//        List<Integer> playerIds = players.stream().map(t -> t.getPlayerId() % 100000).toList();
-//        players.forEach(playerIndex -> {
-//            key.append(playerIndex.toString());
-//        });
-//        if (SquadBuilder.key.equals(String.valueOf(key))) {
-//            substitutes = SquadBuilder.substituteMap;
-//        } else {
+//    public void setSubstitutes(List<Tactic> tacticList, Map<Role, List<CardScore>> roleListMap, Map<Integer,
+//            PlayerCard> playerCardMap) {
+//        Tactic tacticDef = tacticList.get(tactic);
+//        Set<Role> roles = tacticDef.getPositionRoles().stream().map(PositionRole::getRole).collect(Collectors.toSet());
+//        List<Integer> playerList = players.stream().map(TeamPlayer::getPlayerId).toList();
+//        for (Role role : roles) {
+//            List<CardScore> cardScoreList = roleListMap.get(role);
+//            for (CardScore cardScore : cardScoreList) {
+//                if (!playerList.contains(cardScore.getCardId()) && !substitutes.contains(cardScore.getCardId())) {
+//                    substitutes.add(cardScore.getCardId());
+//                    break;
+//                }
+//            }
+//        }
+//        if (substitutes.size() < 7) {
+//            List<Integer> unusedSubstitutes = roleListMap.values()
+//                    .stream()
+//                    .flatMap(List::stream)
+//                    .toList()
+//                    .stream()
+//                    .sorted(Comparator.comparing(CardScore::getScore).reversed())
+//                    .map(CardScore::getCardId)
+//                    .toList();
+//            int i = 0;
+//            while (substitutes.size() < 7) {
+//                Integer cardId = unusedSubstitutes.get(i);
+//                if (!playerList.contains(cardId) && !substitutes.contains(cardId)) {
+//                    substitutes.add(cardId);
+//                }
+//                i++;
+//            }
+//        }
+//        List<CardScore> cardScoreList = substitutes.stream().map(s -> {
+//            PlayerCard playerCard = playerCardMap.get(s);
+//            boolean isGK = playerCard.getPositions().contains(GK);
+//            boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
+//            double score = playerCard.getMetaInfoList().stream().filter(metaInfo -> {
+//                if (isGK) {
+//                    return (metaInfo.getChemistry() == 0 && metaInfo.getChemstyleId() == 250);
+//                } else {
+//                    if (isEvo) {
+//
+//                    }
+//                }
+//            })
+//            return new CardScore(s, )
+//        })
+//    }
+
+//    public void setSubstitutes(List<Tactic> tacticList, Map<Role, List<CardScore>> roleListMap, Map<Integer,
+//            PlayerCard> playerCardMap) {
+////        StringBuilder key = new StringBuilder();
+//        List<Integer> playerIds = players.stream().map(t -> t.getPlayerId()).toList();
+////        players.forEach(playerIndex -> {
+////            key.append(playerIndex.toString());
+////        });
+////        if (SquadBuilder.key.equals(String.valueOf(key))) {
+////            substitutes = SquadBuilder.substituteMap;
+////        } else {
 //            List<Integer> idList = playerCardMap.entrySet()
 //                    .stream()
 //                    .filter(entry -> playerIds.contains(entry.getKey()))
 //                    .map(entry -> entry.getValue().getId())
 //                    .toList();
 //            Tactic tacticDetails = tacticList.get(tactic);
-//            Set<Position> positions = new HashSet<>(tacticDetails.getPositions());
-//            positions.forEach(position -> {
-//                List<CardScore> cardScores = playerPositionMap.get(position);
+//            Set<Role> roles =
+//                    new HashSet<>(tacticDetails.getPositionRoles().stream().map(PositionRole::getRole).toList());
+//            roles.forEach(role -> {
+//                List<CardScore> cardScores = roleListMap.get(role);
 //                for (CardScore cardScore : cardScores) {
-//                    if (!playerIds.contains(cardScore.getCardId() % 100000) && !idList.contains(playerCardMap.get(cardScore.getCardId()).getId())
-//                            && !substitutes.contains(cardScore.getCardId() % 100000)) {
-//                        substitutes.add(cardScore.getCardId() % 100000);
+//                    if (!playerIds.contains(cardScore.getCardId()) && !idList.contains(playerCardMap.get(cardScore.getCardId()).getId())
+//                            && !substitutes.contains(cardScore.getCardId())) {
+//                        substitutes.add(cardScore.getCardId());
 //                        break;
 //                    }
 //                }
@@ -139,9 +193,17 @@ public class VariationTeam {
 //            Map<Integer, Double> substituteScores = new HashMap<>();
 //            substitutes.forEach(index -> {
 //                PlayerCard playerCard = playerCardMap.get(index);
-//                if (playerCard != null) {
-//                    substituteScores.put(index, playerCard.chemScores.get(0));
+//                boolean isGK = playerCard.getPositions().contains(GK);
+//                boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
+//                double score;
+//                if (isGK) {
+//                    score = playerCard.getMetaInfoList().stream().filter(metaInfo -> metaInfo.getChemistry() == 0 && metaInfo.getChemstyleId() == 250).findFirst().get().getMetaRating();
+//                } else {
+//                    if (isEvo) {
+//
+//                    }
 //                }
+//                substituteScores.put(index, score);
 //            });
 //            substitutes = substituteScores.entrySet().stream()
 //                    .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
@@ -149,7 +211,7 @@ public class VariationTeam {
 //                    .map(Map.Entry::getKey)
 //                    .collect(Collectors.toList());
 //            if (substitutes.size() < 7) {
-//                List<Integer> unusedSubstitutes = playerPositionMap.values()
+//                List<Integer> unusedSubstitutes = roleListMap.values()
 //                        .stream()
 //                        .flatMap(List::stream)
 //                        .toList()
@@ -160,16 +222,16 @@ public class VariationTeam {
 //                int i = 0;
 //                while (substitutes.size() < 7) {
 //                    Integer sub = unusedSubstitutes.get(i);
-//                    if (!playerIds.contains(sub % 100000) && !idList.contains(playerCardMap.get(sub).getId())
-//                            && !substitutes.contains(sub % 100000)) {
-//                        substitutes.add(sub % 100000);
+//                    if (!playerIds.contains(sub) && !idList.contains(playerCardMap.get(sub).getId())
+//                            && !substitutes.contains(sub)) {
+//                        substitutes.add(sub;
 //                    }
 //                    i++;
 //                }
 //            }
-//            SquadBuilder.key = String.valueOf(key);
-//            SquadBuilder.substituteMap = substitutes;
-//        }
+////            SquadBuilder.key = String.valueOf(key);
+////            SquadBuilder.substituteMap = substitutes;
+////        }
 //    }
 
     public List<Integer> getSubstitutes() {

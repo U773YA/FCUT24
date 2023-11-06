@@ -96,22 +96,29 @@ public class InputData {
         playerCardInputList.add(new CardInput(70, 218667, "SILVA", 88));
 
         playerCardInputList.add(new CardInput(423, 230621, "DONNARUMMA", 87));
+//        playerCardInputList.add(new CardInput(19864, 50524277, "IAGO ASPAS FLASHBACK", 87));
         playerCardInputList.add(new CardInput(449, 215698, "MAIGNAN", 87));
 
         playerCardInputList.add(new CardInput(19908, 50532536, "DANILO PEREIRA FUT CENTURIONS", 86));
         playerCardInputList.add(new CardInput(303, 235243, "DE LIGT", 86));
+        playerCardInputList.add(new CardInput(462, 211110, "DYBALA", 86));
         playerCardInputList.add(new CardInput(404, 237197, "GEYORO", 86));
+        playerCardInputList.add(new CardInput(236, 186942, "GUNDOGAN", 86));
         playerCardInputList.add(new CardInput(228, 182521, "KROOS", 86));
+        playerCardInputList.add(new CardInput(19956, 50596887, "MCCABE TOTW", 86));
+        playerCardInputList.add(new CardInput(238, 189513, "PAREJO", 86));
         playerCardInputList.add(new CardInput(19782, 50528626, "WILSON TRAILBLAZERS", 86));
 
         playerCardInputList.add(new CardInput(270, 209981, "BOUNOU", 85));
         playerCardInputList.add(new CardInput(76, 237692, "FODEN", 85));
         playerCardInputList.add(new CardInput(332, 247789, "FROHMS", 85));
+        playerCardInputList.add(new CardInput(105, 246219, "SHAW", 85));
         playerCardInputList.add(new CardInput(81, 186345, "TRIPPIER", 85));
         playerCardInputList.add(new CardInput(2515, 242830, "WALSH", 85));
         playerCardInputList.add(new CardInput(163, 265242, "ZINSBERGER", 85));
 
         playerCardInputList.add(new CardInput(2524, 247851, "BRUNO GUIMARAES", 84));
+        playerCardInputList.add(new CardInput(389, 238212, "CAMPBELL", 84));
         playerCardInputList.add(new CardInput(402, 227327, "DABRITZ", 84));
         playerCardInputList.add(new CardInput(331, 202556, "DEPAY", 84));
         playerCardInputList.add(new CardInput(87, 241852, "DIABY", 84));
@@ -119,6 +126,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(262, 209499, "FABINHO", 84));
         playerCardInputList.add(new CardInput(2521, 232580, "GABRIEL", 84));
         playerCardInputList.add(new CardInput(2522, 230666, "GABRIEL JESUS", 84));
+        playerCardInputList.add(new CardInput(2527, 251566, "GABRIEL MARTINELLI", 84));
         playerCardInputList.add(new CardInput(313, 210035, "GRIMALDO", 84));
         playerCardInputList.add(new CardInput(314, 185122, "GULACSI", 84));
         playerCardInputList.add(new CardInput(415, 220814, "HERNANDEZ", 84));
@@ -127,8 +135,12 @@ public class InputData {
         playerCardInputList.add(new CardInput(333, 193747, "KOKE", 84));
         playerCardInputList.add(new CardInput(19261, 50569327, "KOLO MUANI", 84));
         playerCardInputList.add(new CardInput(450, 216435, "LOBOTKA", 84));
+        playerCardInputList.add(new CardInput(452, 198706, "LUIS ALBERTO", 84));
+        playerCardInputList.add(new CardInput(19103, 50524153, "LUKAKU", 84));
+        playerCardInputList.add(new CardInput(316, 189596, "MULLER", 84));
         playerCardInputList.add(new CardInput(317, 222492, "SANE", 84));
         playerCardInputList.add(new CardInput(470, 227410, "SCOTT", 84));
+        playerCardInputList.add(new CardInput(456, 189881, "SMALLING", 84));
         playerCardInputList.add(new CardInput(318, 212190, "SULE", 84));
         playerCardInputList.add(new CardInput(487296, 226491, "TIERNEY EVOLUTIONS III", 84, "11"));
         playerCardInputList.add(new CardInput(184115, 223197, "UNAL FOUNDERS EVO", 84, "2"));
@@ -137,9 +149,11 @@ public class InputData {
 
         playerCardInputList.add(new CardInput(471, 199845, "ACERBI", 83));
         playerCardInputList.add(new CardInput(416, 220834, "ASENSIO", 83));
+        playerCardInputList.add(new CardInput(473, 247797, "BLUNDELL", 83));
         playerCardInputList.add(new CardInput(497, 224179, "BORJA IGLESIAS", 83));
         playerCardInputList.add(new CardInput(481, 213661, "CHRISTENSEN", 83));
         playerCardInputList.add(new CardInput(486, 190460, "ERIKSEN", 83));
+        playerCardInputList.add(new CardInput(345, 226998, "ERIKSSON", 83));
         playerCardInputList.add(new CardInput(490, 232077, "FRANCH", 83));
         playerCardInputList.add(new CardInput(359, 261773, "FREIGANG", 83));
         playerCardInputList.add(new CardInput(358, 205693, "HALLER", 83));
@@ -160,43 +174,78 @@ public class InputData {
         playerCardInputList.add(new CardInput(524, 262058, "SELLNER", 83));
         playerCardInputList.add(new CardInput(477, 189511, "SERGIO BUSQUETS", 83));
         playerCardInputList.add(new CardInput(526, 230869, "UNAI SIMON", 83));
+        playerCardInputList.add(new CardInput(530, 246430, "VLAHOVIC", 83));
 
+        playerCardInputList.add(new CardInput(535, 229237, "AKANJI", 82));
         playerCardInputList.add(new CardInput(252, 248243, "CAMAVINGA", 82));
         playerCardInputList.add(new CardInput(546, 246242, "DIA", 82));
         playerCardInputList.add(new CardInput(548, 226268, "DIMARCO", 82));
         playerCardInputList.add(new CardInput(552, 247811, "ENDO", 82));
+        playerCardInputList.add(new CardInput(551, 235410, "EN-NESYRI", 82));
+        playerCardInputList.add(new CardInput(624, 241461, "FERRAN TORRES", 82));
         playerCardInputList.add(new CardInput(562, 192318, "GOTZE", 82));
+        playerCardInputList.add(new CardInput(563, 241546, "GREBOVAL", 82));
         playerCardInputList.add(new CardInput(564, 212096, "GRIFO", 82));
         playerCardInputList.add(new CardInput(569, 235790, "HAVERTZ", 82));
-        playerCardInputList.add(new CardInput(595, 232498, "ISI", 82));
+//        playerCardInputList.add(new CardInput(595, 232498, "ISI", 82));
         playerCardInputList.add(new CardInput(353, 231591, "JAVI GALAN", 82));
         playerCardInputList.add(new CardInput(590, 212814, "JOAO MARIO", 82));
         playerCardInputList.add(new CardInput(577, 219522, "LEDESMA", 82));
         playerCardInputList.add(new CardInput(579, 241671, "LIVAKOVIC", 82));
         playerCardInputList.add(new CardInput(580, 222077, "LOCATELLI", 82));
+        playerCardInputList.add(new CardInput(439, 199482, "LOPES", 82));
+        playerCardInputList.add(new CardInput(582, 239761, "MAANUM", 82));
         playerCardInputList.add(new CardInput(583, 239837, "MAC ALLISTER", 82));
         playerCardInputList.add(new CardInput(584, 267339, "MACE", 82));
         playerCardInputList.add(new CardInput(267, 234642, "MENDY", 82));
         playerCardInputList.add(new CardInput(275, 210411, "OTAVIO", 82));
         playerCardInputList.add(new CardInput(327, 204639, "SAVIC", 82));
         playerCardInputList.add(new CardInput(611, 226985, "SCHOUGH", 82));
+        playerCardInputList.add(new CardInput(613, 226991, "SEMBRANT", 82));
         playerCardInputList.add(new CardInput(618, 236772, "SZOBOSZLAI", 82));
         playerCardInputList.add(new CardInput(625, 244369, "TSYGANKOV", 82));
         playerCardInputList.add(new CardInput(630, 212188, "WERNER", 82));
         playerCardInputList.add(new CardInput(628, 233751, "VAN DE DONK", 82));
         playerCardInputList.add(new CardInput(124, 240091, "VICARIO", 82));
 
+        playerCardInputList.add(new CardInput(634, 208920, "AKE", 81));
+        playerCardInputList.add(new CardInput(673, 251892, "BETO", 81));
+        playerCardInputList.add(new CardInput(645, 265857, "BILBAULT", 81));
+        playerCardInputList.add(new CardInput(646, 233364, "BLACKSTENIUS", 81));
+        playerCardInputList.add(new CardInput(648, 228881, "CALABRIA", 81));
+        playerCardInputList.add(new CardInput(650, 272010, "CALLIGARIS", 81));
         playerCardInputList.add(new CardInput(90, 229984, "CHILWELL", 81));
+        playerCardInputList.add(new CardInput(652, 246172, "CHUKWUEZE", 81));
+        playerCardInputList.add(new CardInput(653, 197655, "COATES", 81));
         playerCardInputList.add(new CardInput(658, 199304, "DANILO", 81));
+        playerCardInputList.add(new CardInput(660, 236276, "DANJUMA", 81));
+        playerCardInputList.add(new CardInput(722, 219693, "DIEGO CARLOS", 81));
         playerCardInputList.add(new CardInput(717, 226271, "FABIAN RUIZ", 81));
         playerCardInputList.add(new CardInput(672, 239791, "GLAS", 81));
+        playerCardInputList.add(new CardInput(683, 232730, "KAMADA", 81));
+        playerCardInputList.add(new CardInput(687, 216354, "KRAMARIC", 81));
         playerCardInputList.add(new CardInput(685, 179645, "KJAER", 81));
+        playerCardInputList.add(new CardInput(686, 237678, "KONATE", 81));
+        playerCardInputList.add(new CardInput(693, 192563, "LENO", 81));
         playerCardInputList.add(new CardInput(694, 226316, "LEROUX", 81));
         playerCardInputList.add(new CardInput(123, 226226, "LO CELSO", 81));
+        playerCardInputList.add(new CardInput(19170, 50553640, "LOZANO", 81));
+        playerCardInputList.add(new CardInput(701, 175943, "MERTENS", 81));
         playerCardInputList.add(new CardInput(702, 267272, "MILAZZO", 81));
+        playerCardInputList.add(new CardInput(18904, 50586648, "MOFFI TOTW", 81));
+        playerCardInputList.add(new CardInput(120, 243576, "PEDRO PORRO", 81));
         playerCardInputList.add(new CardInput(696, 120533, "PEPE", 81));
         playerCardInputList.add(new CardInput(715, 168651, "RAKITIC", 81));
+        playerCardInputList.add(new CardInput(351, 236045, "REINILDO", 81));
+        playerCardInputList.add(new CardInput(719, 244675, "SANCET", 81));
+        playerCardInputList.add(new CardInput(723, 233195, "SCHLAGER", 81));
+        playerCardInputList.add(new CardInput(19094, 50495235, "SCHMEICHEL", 81));
+        playerCardInputList.add(new CardInput(730, 247263, "TAPSOBA", 81));
+        playerCardInputList.add(new CardInput(731, 207421, "TROSSARD", 81));
         playerCardInputList.add(new CardInput(422, 253306, "UGARTE", 81));
+        playerCardInputList.add(new CardInput(19155, 50546981, "ZAPATA", 81));
+
+        playerCardInputList.add(new CardInput(134585, 244193, "CABRAL EVOLUTION", 75, "3"));
     }
 
     protected static void populateTactics() {
@@ -383,11 +432,17 @@ public class InputData {
 
     protected static void populateManagers() {
         managerList.add(new Manager("FILIPA PATAO", "Portugal", 2228));
+//        managerList.add(new Manager("GARCIA", "Spain", 53));
         managerList.add(new Manager("JOSE BORDALAS", "Spain", 53));
         managerList.add(new Manager("K. PITAK", "Czech Republic", 2230));
+        managerList.add(new Manager("LUIS CASTRO", "Portugal", 350));
         managerList.add(new Manager("M. BEARD", "England", 2216));
+//        managerList.add(new Manager("MENDILIBAR", "Spain", 53));
+        managerList.add(new Manager("M. ALVINI", "Italy", 32));
         managerList.add(new Manager("M. KOLLNER", "Germany", 2076));
         managerList.add(new Manager("N. JELECAK", "Bosnia and Herzegovina", 2218));
+//        managerList.add(new Manager("RAFA BENITEZ", "Spain", 53));
+        managerList.add(new Manager("R. LUCESCU", "Romania", 63));
         managerList.add(new Manager("R. SCHMIDT", "Germany", 308));
         managerList.add(new Manager("R. VIDOSIC", "Croatia", 351));
         managerList.add(new Manager("X. MASSASWABI", "Gambia", 31));
