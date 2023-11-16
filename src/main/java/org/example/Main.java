@@ -2,6 +2,8 @@ package org.example;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.enums.ChemStyle;
 import org.example.enums.Position;
 import org.example.enums.Role;
@@ -15,6 +17,7 @@ import org.example.model.Tactic;
 import org.example.model.TeamPlayer;
 import org.example.model.VariationTeam;
 import org.example.util.InputData;
+import org.example.util.InputDataTest;
 import org.example.util.Permutations;
 import org.example.util.Scraper;
 
@@ -54,8 +57,9 @@ import static org.example.util.CombinationHelper.getCombinations;
 import static org.example.util.CombinationHelper.getFrequency;
 
 public class Main extends InputData {
-
+    private static final Logger LOG = LogManager.getLogger(PlayerCard.class);
     public static Map<Integer, PlayerCard> dbPlayerCardMap = new HashMap<>();
+    public static List<PlayerCard> dbPlayerCardEvoList = new ArrayList<>();
     public static Map<Role, List<CardScore>> roleScoreMap = new HashMap<>();
     private static List<VariationTeam> possibleTeams = new ArrayList<>();
     private static List<VariationTeam> almightyTeams = new ArrayList<>();
@@ -85,10 +89,36 @@ public class Main extends InputData {
             System.out.println("File 'playerCardMap.json' does not exist.");
         }
 
+        file = new File("playerCardEvoList.json");
+        if (file.exists()) {
+            Gson gson = new Gson();
+            try (Reader reader = new FileReader(file)) {
+                dbPlayerCardEvoList = gson.fromJson(reader, new TypeToken<ArrayList<PlayerCard>>() {
+                }.getType());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // handle the case when the file does not exist
+            System.out.println("File 'playerCardEvoList.json' does not exist.");
+        }
+
         Scraper scraper = new Scraper();
         for (CardInput cardInput : playerCardInputList) {
             PlayerCard playerCard;
-            if (dbPlayerCardMap.containsKey(cardInput.getFutBinId())) {
+            boolean isEvo =
+                    cardInput.getEvoId() != null && !cardInput.getEvoId().isBlank() && !cardInput.getEvoId().isEmpty();
+            if (isEvo) {
+                List<PlayerCard> playerEvolutions =
+                        dbPlayerCardEvoList.stream().filter(p -> Objects.equals(p.getFutBinId(), cardInput.getFutBinId())).toList();
+                PlayerCard evoPlayerCard = playerEvolutions.stream().filter(p -> Objects.equals(p.getEvoId(),
+                        cardInput.getEvoId())).findFirst().orElse(null);
+                if (evoPlayerCard != null) {
+                    playerCard = evoPlayerCard;
+                } else {
+                    playerCard = scraper.getCardData(cardInput);
+                }
+            } else if (dbPlayerCardMap.containsKey(cardInput.getFutBinId())) {
                 playerCard = dbPlayerCardMap.get(cardInput.getFutBinId());
             } else {
                 playerCard = scraper.getCardData(cardInput);
@@ -102,6 +132,34 @@ public class Main extends InputData {
             System.out.println("Fetched data for card: " + cardInput.getName());
         }
 
+        for (Map.Entry<Integer, PlayerCard> playerCard : playerCardMap.entrySet()) {
+            if (!dbPlayerCardMap.containsKey(playerCard.getKey())) {
+                dbPlayerCardMap.put(playerCard.getKey(), playerCard.getValue());
+            }
+        }
+        Gson gson3 = new Gson();
+        try (Writer writer = new FileWriter("playerCardMap.json")) {
+            gson3.toJson(dbPlayerCardMap, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<Integer, PlayerCard> playerCard : playerCardMap.entrySet()) {
+            boolean isEvo =
+                    playerCard.getValue().getEvoId() != null && !playerCard.getValue().getEvoId().isBlank() && !playerCard.getValue().getEvoId().isEmpty();
+            if (isEvo && (dbPlayerCardEvoList.stream()
+                    .noneMatch(p -> Objects.equals(p.getFutBinId(), playerCard.getValue().getFutBinId())
+                            && Objects.equals(p.getEvoId(), playerCard.getValue().getEvoId())))) {
+                dbPlayerCardEvoList.add(playerCard.getValue());
+            }
+        }
+        Gson gson = new Gson();
+        try (Writer writer = new FileWriter("playerCardEvoList.json")) {
+            gson.toJson(dbPlayerCardEvoList, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
             PlayerCard playerCard = playerCardEntry.getValue();
             List<Position> positions = playerCard.getPositions();
@@ -113,17 +171,22 @@ public class Main extends InputData {
             });
             List<MetaInfo> metaInfoList = playerCard.getMetaInfoList();
             for (Role role : roleSet) {
-                MetaInfo roleMetaInfo = metaInfoList.stream()
-                        .filter(metaInfo -> {
-                            if (isGK) {
-                                return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
-                            }
-                            return isEvo ?
-                                    metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
-                                    metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
-                                    && metaInfo.isBestChemstyleAtChem();
-                        })
-                        .findFirst().get();
+                MetaInfo roleMetaInfo = new MetaInfo();
+                try {
+                    roleMetaInfo = metaInfoList.stream()
+                            .filter(metaInfo -> {
+                                if (isGK) {
+                                    return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
+                                }
+                                return isEvo ?
+                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
+                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
+                                                && metaInfo.isBestChemstyleAtChem();
+                            })
+                            .findFirst().get();
+                } catch (Exception ex) {
+                    LOG.error("Failed for " + playerCard.getName() + ", " + role.getArchetypeId());
+                }
                 CardScore cardScore = new CardScore(playerCard.getFutBinId(), roleMetaInfo.getMetaRating(),
                         isGK ? GLOVE : ChemStyle.getChemStyle(roleMetaInfo.getChemstyleId()), role);
                 roleScoreMap.computeIfAbsent(role, k -> new ArrayList<>()).add(cardScore);
@@ -150,7 +213,7 @@ public class Main extends InputData {
 
             // Add mandatory scores if they are not already in the top 5
             for (CardScore m : mandatoryScores) {
-                if (list.stream().noneMatch(l -> l.getCardId() == m.getCardId())) {
+                if (list.stream().noneMatch(l -> Objects.equals(l.getCardId(), m.getCardId()))) {
                     list.add(m);
                 }
             }
@@ -200,18 +263,6 @@ public class Main extends InputData {
         getCombinations(playerPositionMap.get(CAM), playerPositionMap.get(CAM).size(), 2, cam2);
         getCombinations(playerPositionMap.get(CM), playerPositionMap.get(CM).size(), 3, cm3);
 
-        for (Map.Entry<Integer, PlayerCard> playerCard : playerCardMap.entrySet()) {
-            if (!dbPlayerCardMap.containsKey(playerCard.getKey())) {
-                dbPlayerCardMap.put(playerCard.getKey(), playerCard.getValue());
-            }
-        }
-        Gson gson3 = new Gson();
-        try (Writer writer = new FileWriter("playerCardMap.json")) {
-            gson3.toJson(dbPlayerCardMap, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         for (Tactic tactic : tacticList
 //                .stream()
 //                .filter(t -> Arrays.asList("4-1-3-2","4-1-2-1-2(2)","4-1-4-1","4-3-3(2)","4-5-1(2)","4-4-2")
@@ -226,7 +277,7 @@ public class Main extends InputData {
                 .collect(Collectors.toList());
         System.out.println("Almighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
-//            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
+            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
             System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
             System.out.print(variationTeam.getChemistry() + "\t");
             System.out.print(variationTeam.getTotalRating() + "\t");
@@ -290,7 +341,7 @@ public class Main extends InputData {
 
         System.out.println("\nTeams sorted by overall score: ");
         sortedTeamsByScore = possibleTeams.stream().sorted(Comparator.comparing(VariationTeam::getTotalRating).reversed())
-                .limit(10)
+                .limit(1)
                 .collect(Collectors.toList());
 
         if (!sortedTeamsByScore.isEmpty()) {
@@ -324,6 +375,9 @@ public class Main extends InputData {
             if (!mandatoryPlayers.isEmpty() && !new HashSet<>(teamPlayerCardIds).containsAll(mandatoryPlayers)) {
                 return;
             }
+//            if (new HashSet<>(teamPlayerCardIds).containsAll(List.of(19654,47,49,423,19908,404,20031,87,19091,19261,487296))) {
+//                System.out.println("break");
+//            }
 //            List<String> countryList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getNation()).toList();
 //            List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p).getLeagueId()).toList();
 //            if (Collections.frequency(countryList, "England") < 3) {
@@ -338,27 +392,20 @@ public class Main extends InputData {
         if (duplicatesList != null && !duplicatesList.isEmpty()) {
             int size = duplicatesList.get(0).size();
             duplicatesList.forEach(item -> {
-                int modifiedCount = 0;
                 for (int i = 0; i < size; i++) {
                     int player = item.get(i);
                     PlayerCard playerCard = playerCardMap.get(player);
+//                    if (roleScoreMap.get(tactic.getPositionRoles().get(position + i).getRole()).stream()
+//                            .map(CardScore::getCardId).noneMatch(p -> p == player)) {
+//                        return;
+//                    }
                     String name = playerCard.getName();
-//                    boolean isModifiedPlayer = !Objects.equals(positionName, playerCard.getPosition());
                     List<TeamPlayer> existingPlayers = team.getPlayers();
                     if (existingPlayers.size() > position + i) {
                         existingPlayers.set(position + i, new TeamPlayer(player));
                     } else {
                         existingPlayers.add(position + i, new TeamPlayer(player));
                     }
-//                    if (isModifiedPlayer) {
-//                        team.setModifiedPlayers(team.getModifiedPlayers() + 1);
-//                        modifiedCount++;
-//                        if (team.getModifiedPlayers() > modifiedPlayers) {
-//                            team.setModifiedPlayers(team.getModifiedPlayers() - 1);
-//                            modifiedCount--;
-//                            return;
-//                        }
-//                    }
                 }
                 List<Integer> playerIds = team.getPlayers().stream().map(TeamPlayer::getPlayerId).toList();
                 if (containsDuplicates(playerIds)) {
@@ -382,7 +429,6 @@ public class Main extends InputData {
                 for (int i = size - 1; i >= 0; i--) {
                     team.getPlayers().remove(position + i);
                 }
-//                team.setModifiedPlayers(team.getModifiedPlayers() - modifiedCount);
             });
         } else {
             AtomicReference<List<Integer>> playerIds = new AtomicReference<>(team.getPlayers().stream().map(TeamPlayer::getPlayerId).toList());
@@ -390,23 +436,18 @@ public class Main extends InputData {
                     .filter(player -> {
                         Integer id = playerCardMap.get(player).getId();
                         return team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getId()).noneMatch(p -> Objects.equals(p, id));
-                    }).forEach(player -> {
+                    })
+                    .filter(player -> roleScoreMap.get(tactic.getPositionRoles().get(position).getRole()).stream()
+                            .map(CardScore::getCardId).anyMatch(p -> Objects.equals(p, player)))
+                    .forEach(player -> {
                         PlayerCard playerCard = playerCardMap.get(player);
                         String name = playerCard.getName();
-//                        boolean isModifiedPlayer = !Objects.equals(positionName, playerCard.getPosition());
                         List<TeamPlayer> existingPlayers = team.getPlayers();
                         if (existingPlayers.size() > position) {
                             existingPlayers.set(position, new TeamPlayer(player));
                         } else {
                             existingPlayers.add(position, new TeamPlayer(player));
                         }
-//                        if (isModifiedPlayer) {
-//                            team.setModifiedPlayers(team.getModifiedPlayers() + 1);
-//                            if (team.getModifiedPlayers() > modifiedPlayers) {
-//                                team.setModifiedPlayers(team.getModifiedPlayers() - 1);
-//                                return;
-//                            }
-//                        }
                         if (containsDuplicates(team.getPlayers())) {
                             existingPlayers.remove(position);
                             return;
@@ -423,9 +464,6 @@ public class Main extends InputData {
                         }
                         constructVariationTeam(position + 1, tactic, team);
                         existingPlayers.remove(position);
-//                        if (isModifiedPlayer) {
-//                            team.setModifiedPlayers(team.getModifiedPlayers() - 1);
-//                        }
                     });
         }
     }
@@ -461,7 +499,9 @@ public class Main extends InputData {
                         nationMap.merge(manager.getNation(), 1, Integer::sum);
                         leagueMap.merge(manager.getLeague(), 1, Integer::sum);
                         int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < 20) {
+                        if (chemistry < 25) {
+                            nationMap.merge(manager.getNation(), -1, Integer::sum);
+                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
                             continue;
                         }
                         VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
@@ -485,7 +525,9 @@ public class Main extends InputData {
                         nationMap.merge(manager.getNation(), 1, Integer::sum);
                         leagueMap.merge(manager.getLeague(), 1, Integer::sum);
                         int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < 20) {
+                        if (chemistry < 25) {
+                            nationMap.merge(manager.getNation(), -1, Integer::sum);
+                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
                             continue;
                         }
                         VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
@@ -504,7 +546,7 @@ public class Main extends InputData {
         Optional<VariationTeam> optBestTeam = allTeams.stream().max(Comparator.comparing(VariationTeam::getChemistry));
         if (optBestTeam.isPresent()) {
             VariationTeam bestTeam = optBestTeam.get();
-            if (bestTeam.getChemistry() >= 20) {
+            if (bestTeam.getChemistry() >= 25) {
                 possibleTeams.add(bestTeam);
                 if (possibleTeams.size() % 100000 == 0) {
                     System.out.println("No. of teams : " + possibleTeams.size());
@@ -535,7 +577,7 @@ public class Main extends InputData {
             totalChemistry = totalChemistry + playerChem;
             player.setChemistry(playerChem);
             chemDeficit += 3 - playerChem;
-            if (chemDeficit > 13) {
+            if (chemDeficit > 8) {
                 break;
             }
         }
@@ -581,7 +623,11 @@ public class Main extends InputData {
                             Role role = tacticList.get(tacticIndex).getPositionRoles().get(i + j).getRole();
                             int finalJ = j;
                             TeamPlayer teamPlayer1 = playerList.stream().filter(p -> Objects.equals(p.getPlayerId(), permutation.get(finalJ))).findFirst().get();
-                            PlayerCard playerCard1 = playerCardMap.get(playerList.get(i + j).getPlayerId());
+                            PlayerCard playerCard1 = playerCardMap.get(teamPlayer1.getPlayerId());
+                            if (roleScoreMap.get(role).stream().map(CardScore::getCardId).noneMatch(p-> Objects.equals(p, playerCard1.getFutBinId()))) {
+                                score += 0;
+                                continue;
+                            }
                             boolean isEvo =
                                     playerCard1.getEvoId() != null && !playerCard1.getEvoId().isBlank() && !playerCard1.getEvoId().isEmpty();
                             score += playerCard1.getMetaInfoList().stream()
