@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.example.enums.ChemStyle;
 import org.example.enums.Position;
 import org.example.enums.Role;
@@ -11,6 +12,7 @@ import org.example.model.CardInput;
 import org.example.model.CardScore;
 import org.example.model.Manager;
 import org.example.model.MetaInfo;
+import org.example.model.Pair;
 import org.example.model.PlayerCard;
 import org.example.model.PositionRole;
 import org.example.model.Tactic;
@@ -160,87 +162,129 @@ public class SquadBuilder extends InputData {
 
         for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
             PlayerCard playerCard = playerCardEntry.getValue();
-            List<Position> positions = playerCard.getPositions();
-            boolean isGK = positions.contains(GK);
-            boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
-            Set<Role> roleSet = new HashSet<>();
-            positions.forEach(position -> {
-                roleSet.addAll(positionRoleMap.get(position));
-            });
-            List<MetaInfo> metaInfoList = playerCard.getMetaInfoList();
-            for (Role role : roleSet) {
-                MetaInfo roleMetaInfo = new MetaInfo();
-                try {
-                    roleMetaInfo = metaInfoList.stream()
-                            .filter(metaInfo -> {
-                                if (isGK) {
-                                    return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
-                                }
-                                return isEvo ?
-                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
-                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
-                                                && metaInfo.isBestChemstyleAtChem();
-                            })
-                            .findFirst().get();
-                } catch (Exception ex) {
-                    LOG.error("Failed for " + playerCard.getName() + ", " + role.getArchetypeId());
-                }
-                CardScore cardScore = new CardScore(playerCard.getFutBinId(), roleMetaInfo.getMetaRating(),
-                        isGK ? GLOVE : ChemStyle.getChemStyle(roleMetaInfo.getChemstyleId()), role);
-                roleScoreMap.computeIfAbsent(role, k -> new ArrayList<>()).add(cardScore);
+            for (Position position : playerCard.getPositions()) {
+                playerPositionMap.computeIfAbsent(position, k -> new ArrayList<>()).add(playerCardEntry.getKey());
             }
         }
-
-        for (List<CardScore> list : roleScoreMap.values()) {
-            Role role = list.get(0).getRole();
-
-            // Extract card IDs from the mandatory players
-            List<CardScore> finalList = list;
-            List<Integer> mandatoryCardIds = mandatoryPlayers.stream()
-                    .filter(p -> finalList.stream().map(CardScore::getCardId).anyMatch(cardId -> Objects.equals(cardId, p)))
-                    .toList();
-
-            // Filter mandatory scores
-            List<CardScore> mandatoryScores = list.stream()
-                    .filter(score -> mandatoryCardIds.contains(score.getCardId()))
-                    .toList();
-
-            // Sort the original list by score in descending order and take the top 5
-            list.sort(Comparator.comparing(CardScore::getScore).reversed());
-            list = list.subList(0, Math.min(5, list.size()));
-
-            // Add mandatory scores if they are not already in the top 5
-            for (CardScore m : mandatoryScores) {
-                if (list.stream().noneMatch(l -> Objects.equals(l.getCardId(), m.getCardId()))) {
-                    list.add(m);
-                }
-            }
-
-            roleScoreMap.put(role, list);
-        }
-        System.out.println("\nBest players in each role: ");
-        roleScoreMap.forEach((key, value) -> {
-            System.out.print(key + " -> ");
-            value.forEach(cardScore -> {
-                PlayerCard playerCard = playerCardMap.get(cardScore.getCardId());
-                System.out.print(playerCard.getName() + " (" + cardScore.getChemStyle() + ") " + "-" + String.format(
-                        "%.2f", cardScore.getScore()) + ", ");
-            });
-            System.out.println();
-            System.out.println();
-        });
-
-        for (Map.Entry<Position, List<Role>> positionListEntry : positionRoleMap.entrySet()) {
+        for (Map.Entry<Position, List<Integer>> positionListEntry : playerPositionMap.entrySet()) {
             Position position = positionListEntry.getKey();
-            Set<Integer> cards = new HashSet<>();
-            for (Role role : positionListEntry.getValue()) {
-                List<Integer> cardIds = roleScoreMap.get(role).stream().map(CardScore::getCardId).toList();
-                cardIds.stream().filter(id -> playerCardMap.get(id).getPositions().contains(position))
-                        .forEach(cards::add);
-//                cards.addAll(roleScoreMap.get(role).stream().map(CardScore::getCardId).toList());
+            List<Role> positionRoles = positionRoleMap.get(position);
+            List<Pair> scoreList = new ArrayList<>();
+            for (Integer player : positionListEntry.getValue()) {
+                PlayerCard playerCard = playerCardMap.get(player);
+                boolean isGK = position == GK;
+                boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
+                List<MetaInfo> metaInfoList = playerCard.getMetaInfoList();
+                Double score = 0.0;
+                for (Role role : positionRoles) {
+                    MetaInfo roleMetaInfo = new MetaInfo();
+                    try {
+                        roleMetaInfo = metaInfoList.stream()
+                                .filter(metaInfo -> {
+                                    if (isGK) {
+                                        return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
+                                    }
+                                    return isEvo ?
+                                            metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
+                                            metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
+                                                    && metaInfo.isBestChemstyleAtChem();
+                                })
+                                .findFirst().get();
+                    } catch (Exception ex) {
+                        LOG.error("Failed for " + playerCard.getName() + ", " + role.getArchetypeId());
+                    }
+                    score += roleMetaInfo.getMetaRating();
+                }
+                Pair pair = new Pair(player, score / positionRoles.size());
+                scoreList.add(pair);
             }
-            playerPositionMap.put(position, cards.stream().toList());
+            scoreList = scoreList.stream().sorted(Comparator.comparing(Pair::getSecond).reversed()).limit(5).toList();
+            positionListEntry.setValue(scoreList.stream().map(Pair::getFirst).toList());
         }
+//
+//        for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
+//            PlayerCard playerCard = playerCardEntry.getValue();
+//            List<Position> positions = playerCard.getPositions();
+//            boolean isGK = positions.contains(GK);
+//            boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
+//            Set<Role> roleSet = new HashSet<>();
+//            positions.forEach(position -> {
+//                roleSet.addAll(positionRoleMap.get(position));
+//            });
+//            List<MetaInfo> metaInfoList = playerCard.getMetaInfoList();
+//            for (Role role : roleSet) {
+//                MetaInfo roleMetaInfo = new MetaInfo();
+//                try {
+//                    roleMetaInfo = metaInfoList.stream()
+//                            .filter(metaInfo -> {
+//                                if (isGK) {
+//                                    return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
+//                                }
+//                                return isEvo ?
+//                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
+//                                        metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
+//                                                && metaInfo.isBestChemstyleAtChem();
+//                            })
+//                            .findFirst().get();
+//                } catch (Exception ex) {
+//                    LOG.error("Failed for " + playerCard.getName() + ", " + role.getArchetypeId());
+//                }
+//                CardScore cardScore = new CardScore(playerCard.getFutBinId(), roleMetaInfo.getMetaRating(),
+//                        isGK ? GLOVE : ChemStyle.getChemStyle(roleMetaInfo.getChemstyleId()), role);
+//                roleScoreMap.computeIfAbsent(role, k -> new ArrayList<>()).add(cardScore);
+//            }
+//        }
+//
+//        for (List<CardScore> list : roleScoreMap.values()) {
+//            Role role = list.get(0).getRole();
+//
+//            // Extract card IDs from the mandatory players
+//            List<CardScore> finalList = list;
+//            List<Integer> mandatoryCardIds = mandatoryPlayers.stream()
+//                    .filter(p -> finalList.stream().map(CardScore::getCardId).anyMatch(cardId -> Objects.equals(cardId, p)))
+//                    .toList();
+//
+//            // Filter mandatory scores
+//            List<CardScore> mandatoryScores = list.stream()
+//                    .filter(score -> mandatoryCardIds.contains(score.getCardId()))
+//                    .toList();
+//
+//            // Sort the original list by score in descending order and take the top 5
+//            list.sort(Comparator.comparing(CardScore::getScore).reversed());
+//            list = list.subList(0, Math.min(5, list.size()));
+//
+//            // Add mandatory scores if they are not already in the top 5
+//            for (CardScore m : mandatoryScores) {
+//                if (list.stream().noneMatch(l -> Objects.equals(l.getCardId(), m.getCardId()))) {
+//                    list.add(m);
+//                }
+//            }
+//
+//            roleScoreMap.put(role, list);
+//        }
+//        System.out.println("\nBest players in each role: ");
+//        roleScoreMap.forEach((key, value) -> {
+//            System.out.print(key + " -> ");
+//            value.forEach(cardScore -> {
+//                PlayerCard playerCard = playerCardMap.get(cardScore.getCardId());
+//                System.out.print(playerCard.getName() + " (" + cardScore.getChemStyle() + ") " + "-" + String.format(
+//                        "%.2f", cardScore.getScore()) + ", ");
+//            });
+//            System.out.println();
+//            System.out.println();
+//        });
+//
+//        for (Map.Entry<Position, List<Role>> positionListEntry : positionRoleMap.entrySet()) {
+//            Position position = positionListEntry.getKey();
+//            Set<Integer> cards = new HashSet<>();
+//            for (Role role : positionListEntry.getValue()) {
+//                List<Integer> cardIds = roleScoreMap.get(role).stream().map(CardScore::getCardId).toList();
+//                cardIds.stream().filter(id -> playerCardMap.get(id).getPositions().contains(position))
+//                        .forEach(cards::add);
+////                cards.addAll(roleScoreMap.get(role).stream().map(CardScore::getCardId).toList());
+//            }
+//            playerPositionMap.put(position, cards.stream().toList());
+//        }
         System.out.println("\nBest players in each position: ");
         playerPositionMap.forEach((key, value) -> {
             System.out.print(key + " -> ");
@@ -275,7 +319,7 @@ public class SquadBuilder extends InputData {
                 .collect(Collectors.toList());
         System.out.println("Almighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
-            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
+//            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
             System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
             System.out.print(variationTeam.getChemistry() + "\t");
             System.out.print(variationTeam.getTotalRating() + "\t");
@@ -435,8 +479,8 @@ public class SquadBuilder extends InputData {
                         Integer id = playerCardMap.get(player).getId();
                         return team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getId()).noneMatch(p -> Objects.equals(p, id));
                     })
-                    .filter(player -> roleScoreMap.get(tactic.getPositionRoles().get(position).getRole()).stream()
-                            .map(CardScore::getCardId).anyMatch(p -> Objects.equals(p, player)))
+//                    .filter(player -> roleScoreMap.get(tactic.getPositionRoles().get(position).getRole()).stream()
+//                            .map(CardScore::getCardId).anyMatch(p -> Objects.equals(p, player)))
                     .forEach(player -> {
                         PlayerCard playerCard = playerCardMap.get(player);
                         String name = playerCard.getName();
@@ -622,10 +666,10 @@ public class SquadBuilder extends InputData {
                             int finalJ = j;
                             TeamPlayer teamPlayer1 = playerList.stream().filter(p -> Objects.equals(p.getPlayerId(), permutation.get(finalJ))).findFirst().get();
                             PlayerCard playerCard1 = playerCardMap.get(teamPlayer1.getPlayerId());
-                            if (roleScoreMap.get(role).stream().map(CardScore::getCardId).noneMatch(p-> Objects.equals(p, playerCard1.getFutBinId()))) {
-                                score += 0;
-                                continue;
-                            }
+//                            if (roleScoreMap.get(role).stream().map(CardScore::getCardId).noneMatch(p-> Objects.equals(p, playerCard1.getFutBinId()))) {
+//                                score += 0;
+//                                continue;
+//                            }
                             boolean isEvo =
                                     playerCard1.getEvoId() != null && !playerCard1.getEvoId().isBlank() && !playerCard1.getEvoId().isEmpty();
                             score += playerCard1.getMetaInfoList().stream()

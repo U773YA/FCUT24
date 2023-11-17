@@ -62,7 +62,7 @@ public class InputData {
     protected static final long startTime = System.nanoTime();
     protected static long allTeamsCount = 1;
     protected static long teamCounter = 0;
-    protected static List<Integer> mandatoryPlayers = List.of(953302);
+    protected static List<Integer> mandatoryPlayers = List.of();
     protected static final List<Position> duplicatePositions = List.of(CB, CM, ST, CF, CDM, CAM);
 
     static {
@@ -84,7 +84,8 @@ public class InputData {
     }
 
     protected static void populatePlayerInput() {
-        playerCardInputList.add(new CardInput(20117, 67335192, "RAPINOE", 88));
+        playerCardInputList.add(new CardInput(230, 194765, "GRIEZMANN", 88));
+        playerCardInputList.add(new CardInput(336, 226161, "LLORENTE", 84));
         playerCardInputList.add(new CardInput(32, 227125, "KERR", 90));
 
         playerCardInputList.add(new CardInput(19654, 50512578, "DZEKO RTTK", 89));
@@ -117,7 +118,9 @@ public class InputData {
         playerCardInputList.add(new CardInput(19956, 50596887, "MCCABE TOTW", 86));
         playerCardInputList.add(new CardInput(268, 223848, "MILINKOVIC-SAVIC", 86));
 //        playerCardInputList.add(new CardInput(238, 189513, "PAREJO", 86));
+        playerCardInputList.add(new CardInput(19976, 50574782, "RAMAZANI", 86));
         playerCardInputList.add(new CardInput(74, 216267, "ROBERTSON", 86));
+        playerCardInputList.add(new CardInput(19854, 50537217, "WARD-PROWSE TRAILBLAZERS", 86));
         playerCardInputList.add(new CardInput(19782, 50528626, "WILSON TRAILBLAZERS", 86));
 
         playerCardInputList.add(new CardInput(270, 209981, "BOUNOU", 85));
@@ -138,6 +141,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(2524, 247851, "BRUNO GUIMARAES", 84));
         playerCardInputList.add(new CardInput(656148, 244193, "CABRAL CENTURIONS EVOLUTION", 84, "15"));
         playerCardInputList.add(new CardInput(389, 238212, "CAMPBELL", 84));
+        playerCardInputList.add(new CardInput(20101, 50578294, "CAQUERET TRIPLE THREAT", 84));
         playerCardInputList.add(new CardInput(19127, 50540066, "CARRASCO", 84));
         playerCardInputList.add(new CardInput(402, 227327, "DABRITZ", 84));
         playerCardInputList.add(new CardInput(331, 202556, "DEPAY", 84));
@@ -166,7 +170,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(455, 210008, "RABIOT", 84));
 //        playerCardInputList.add(new CardInput(317, 222492, "SANE", 84));
 //        playerCardInputList.add(new CardInput(470, 227410, "SCOTT", 84));
-//        playerCardInputList.add(new CardInput(456, 189881, "SMALLING", 84));
+        playerCardInputList.add(new CardInput(456, 189881, "SMALLING", 84));
         playerCardInputList.add(new CardInput(318, 212190, "SULE", 84));
         playerCardInputList.add(new CardInput(487296, 226491, "TIERNEY EVOLUTIONS III", 84, "11"));
 //        playerCardInputList.add(new CardInput(2516, 189509, "THIAGO", 84));
@@ -211,6 +215,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(19618, 50603899, "PATRI OJEDA FOUNDATIONS", 83));
         playerCardInputList.add(new CardInput(515, 246178, "PEYRAUD-MAGNIN", 83));
         playerCardInputList.add(new CardInput(517, 233838, "RAUCH", 83));
+        playerCardInputList.add(new CardInput(20119, 50596533, "REVELLI FOUNDATIONS", 83));
         playerCardInputList.add(new CardInput(519, 210413, "ROMAGNOLI", 83));
         playerCardInputList.add(new CardInput(19662, 50529791, "SAMU SAIZ FOUNDATIONS", 83));
 //        playerCardInputList.add(new CardInput(522, 234236, "SCHICK", 83));
@@ -264,6 +269,7 @@ public class InputData {
 //        playerCardInputList.add(new CardInput(124, 240091, "VICARIO", 82));
 
         playerCardInputList.add(new CardInput(634, 208920, "AKE", 81));
+        playerCardInputList.add(new CardInput(643, 263578, "BALDE", 81));
         playerCardInputList.add(new CardInput(673, 251892, "BETO", 81));
         playerCardInputList.add(new CardInput(645, 265857, "BILBAULT", 81));
         playerCardInputList.add(new CardInput(646, 233364, "BLACKSTENIUS", 81));
@@ -290,6 +296,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(123, 226226, "LO CELSO", 81));
         playerCardInputList.add(new CardInput(19170, 50553640, "LOZANO", 81));
         playerCardInputList.add(new CardInput(254, 208618, "LUCAS VAZQUEZ", 81));
+        playerCardInputList.add(new CardInput(726, 204614, "MARIO RUI", 81));
         playerCardInputList.add(new CardInput(701, 175943, "MERTENS", 81));
         playerCardInputList.add(new CardInput(702, 267272, "MILAZZO", 81));
         playerCardInputList.add(new CardInput(703, 205175, "MILIK", 81));
@@ -298,6 +305,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(711, 235659, "PARRIS", 81));
         playerCardInputList.add(new CardInput(120, 243576, "PEDRO PORRO", 81));
         playerCardInputList.add(new CardInput(696, 120533, "PEPE", 81));
+        playerCardInputList.add(new CardInput(713, 216409, "POLITANO", 81));
         playerCardInputList.add(new CardInput(715, 168651, "RAKITIC", 81));
         playerCardInputList.add(new CardInput(351, 236045, "REINILDO", 81));
         playerCardInputList.add(new CardInput(719, 244675, "SANCET", 81));
