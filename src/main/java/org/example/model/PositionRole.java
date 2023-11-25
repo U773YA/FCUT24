@@ -33,4 +33,12 @@ public class PositionRole {
     public int hashCode() {
         return Objects.hash(getPosition(), getRole());
     }
+
+    @Override
+    public String toString() {
+        return "PositionRole{" +
+                "position=" + position +
+                ", role=" + role +
+                '}';
+    }
 }

@@ -1,6 +1,7 @@
 package org.example.util;
 
 import org.example.enums.Position;
+import org.example.model.PositionRole;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,14 @@ public class CombinationHelper {
 
     public static Map<Position, Integer> getFrequency(List<Position> positions) {
         Map<Position, Integer> frequencies = new HashMap<>();
+        positions.forEach(position -> {
+            frequencies.merge(position, 1, Integer::sum);
+        });
+        return frequencies;
+    }
+
+    public static Map<PositionRole, Integer> getFrequencyForPositionRoles(List<PositionRole> positions) {
+        Map<PositionRole, Integer> frequencies = new HashMap<>();
         positions.forEach(position -> {
             frequencies.merge(position, 1, Integer::sum);
         });

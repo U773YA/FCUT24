@@ -1,8 +1,10 @@
 package org.example.util;
 
+import com.sun.source.tree.ProvidesTree;
 import org.example.enums.Position;
 import org.example.enums.Role;
 import org.example.model.CardInput;
+import org.example.model.CardScore;
 import org.example.model.Manager;
 import org.example.model.PlayerCard;
 import org.example.model.PositionRole;
@@ -51,6 +53,7 @@ public class InputData {
     protected static final List<Manager> managerList = new ArrayList<>();
     protected static final Map<Position, List<Role>> positionRoleMap = new HashMap<>();
     protected static Map<Position, List<Integer>> playerPositionMap = new HashMap<>();
+    protected static Map<PositionRole, List<CardScore>> positionRoleListMap = new HashMap<>();
     protected static final List<List<Integer>> cb2 = new ArrayList<>();
     protected static final List<List<Integer>> cb3 = new ArrayList<>();
     protected static final List<List<Integer>> cm2 = new ArrayList<>();
@@ -59,11 +62,20 @@ public class InputData {
     protected static final List<List<Integer>> cdm2 = new ArrayList<>();
     protected static final List<List<Integer>> cam2 = new ArrayList<>();
     protected static final List<List<Integer>> cm3 = new ArrayList<>();
+    protected static final List<List<Integer>> cb_cb2 = new ArrayList<>();
+    protected static final List<List<Integer>> cb_cb3 = new ArrayList<>();
+    protected static final List<List<Integer>> cm_b2b2 = new ArrayList<>();
+    protected static final List<List<Integer>> st_st2 = new ArrayList<>();
+    protected static final List<List<Integer>> cam_cam2 = new ArrayList<>();
+    protected static final List<List<Integer>> cf_rat2 = new ArrayList<>();
     protected static final long startTime = System.nanoTime();
     protected static long allTeamsCount = 1;
     protected static long teamCounter = 0;
     protected static List<Integer> mandatoryPlayers = List.of();
     protected static final List<Position> duplicatePositions = List.of(CB, CM, ST, CF, CDM, CAM);
+    protected static final List<PositionRole> duplicatePositionRoles = List.of(new PositionRole(CB, CENTRAL_DEFENDER),
+            new PositionRole(CM, BOX_TO_BOX), new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(CAM, PLAYMAKER),
+            new PositionRole(CF, AGILE_STRIKER));
 
     static {
         positionRoleMap.put(GK, List.of(KEEPER));
@@ -84,36 +96,43 @@ public class InputData {
     }
 
     protected static void populatePlayerInput() {
-        playerCardInputList.add(new CardInput(230, 194765, "GRIEZMANN", 88));
-        playerCardInputList.add(new CardInput(336, 226161, "LLORENTE", 84));
         playerCardInputList.add(new CardInput(32, 227125, "KERR", 90));
 
+        playerCardInputList.add(new CardInput(53, 212831, "ALISSON", 89));
         playerCardInputList.add(new CardInput(19654, 50512578, "DZEKO RTTK", 89));
         playerCardInputList.add(new CardInput(47, 236479, "MAPI LEON", 89));
         playerCardInputList.add(new CardInput(49, 231866, "RODRI", 89));
 
+        playerCardInputList.add(new CardInput(18950, 48940, "CECH ICON", 88));
+        playerCardInputList.add(new CardInput(230, 194765, "GRIEZMANN", 88));
         playerCardInputList.add(new CardInput(300, 212622, "KIMMICH", 88));
         playerCardInputList.add(new CardInput(20089, 50596900, "NEVILLE", 88));
 //        playerCardInputList.add(new CardInput(106, 226302, "POPP", 88));
 //        playerCardInputList.add(new CardInput(397, 227316, "RENARD", 88));
         playerCardInputList.add(new CardInput(70, 218667, "SILVA", 88));
 
-        playerCardInputList.add(new CardInput(190, 227246, "BRONZE", 87));
+//        playerCardInputList.add(new CardInput(190, 227246, "BRONZE", 87));
         playerCardInputList.add(new CardInput(423, 230621, "DONNARUMMA", 87));
 //        playerCardInputList.add(new CardInput(19864, 50524277, "IAGO ASPAS FLASHBACK", 87));
         playerCardInputList.add(new CardInput(301, 235073, "KOBEL", 87));
         playerCardInputList.add(new CardInput(20092, 67329561, "MADDISON TRIPLE THREAT", 87));
         playerCardInputList.add(new CardInput(449, 215698, "MAIGNAN", 87));
-        playerCardInputList.add(new CardInput(226, 177003, "MODRIC", 87));
-        playerCardInputList.add(new CardInput(953302, 223197, "UNAL CENTURIONS EVO", 87, "2-17"));
+//        playerCardInputList.add(new CardInput(226, 177003, "MODRIC", 87));
+//        playerCardInputList.add(new CardInput(324, 248717, "OBERDORF", 87));
         playerCardInputList.add(new CardInput(20023, 50495888, "THIAGO SILVA FUT CENTURIONS", 87));
+        playerCardInputList.add(new CardInput(953302, 223197, "UNAL CENTURIONS EVO", 87, "2-17"));
+        playerCardInputList.add(new CardInput(19979, 50509061, "WITSEL STORYLINE", 87));
 
+
+//        playerCardInputList.add(new CardInput(72, 231281, "ALEXANDER-ARNOLD", 86));
+        playerCardInputList.add(new CardInput(25, 252371, "BELLINGHAM", 86));
         playerCardInputList.add(new CardInput(19991, 50556019, "BOWEN FUT CENTURIONS", 86));
         playerCardInputList.add(new CardInput(19908, 50532536, "DANILO PEREIRA FUT CENTURIONS", 86));
         playerCardInputList.add(new CardInput(303, 235243, "DE LIGT", 86));
         playerCardInputList.add(new CardInput(462, 211110, "DYBALA", 86));
         playerCardInputList.add(new CardInput(404, 237197, "GEYORO", 86));
 //        playerCardInputList.add(new CardInput(236, 186942, "GUNDOGAN", 86));
+        playerCardInputList.add(new CardInput(20165, 50563474, "KARAMOH FC PRO", 86));
 //        playerCardInputList.add(new CardInput(228, 182521, "KROOS", 86));
         playerCardInputList.add(new CardInput(19956, 50596887, "MCCABE TOTW", 86));
         playerCardInputList.add(new CardInput(268, 223848, "MILINKOVIC-SAVIC", 86));
@@ -121,17 +140,23 @@ public class InputData {
         playerCardInputList.add(new CardInput(19976, 50574782, "RAMAZANI", 86));
         playerCardInputList.add(new CardInput(74, 216267, "ROBERTSON", 86));
         playerCardInputList.add(new CardInput(19854, 50537217, "WARD-PROWSE TRAILBLAZERS", 86));
+        playerCardInputList.add(new CardInput(20126, 50568288, "WILLIAMS TOTW", 86));
         playerCardInputList.add(new CardInput(19782, 50528626, "WILSON TRAILBLAZERS", 86));
 
         playerCardInputList.add(new CardInput(270, 209981, "BOUNOU", 85));
+        playerCardInputList.add(new CardInput(440, 208128, "CALHANOGLU", 85));
         playerCardInputList.add(new CardInput(2511, 235657, "DALY", 85));
         playerCardInputList.add(new CardInput(76, 237692, "FODEN", 85));
         playerCardInputList.add(new CardInput(332, 247789, "FROHMS", 85));
+        playerCardInputList.add(new CardInput(308, 256630, "WIRTZ", 85));
+        playerCardInputList.add(new CardInput(20169, 50563095, "MALEN FC PRO", 85));
+        playerCardInputList.add(new CardInput(388, 226328, "RAPINOE", 85));
+        playerCardInputList.add(new CardInput(80, 234378, "RICE", 85));
         playerCardInputList.add(new CardInput(392, 226177, "SAUERBRUNN", 85));
         playerCardInputList.add(new CardInput(105, 246219, "SHAW", 85));
         playerCardInputList.add(new CardInput(81, 186345, "TRIPPIER", 85));
         playerCardInputList.add(new CardInput(19973, 50565815, "VAN DER HEYDEN", 85));
-        playerCardInputList.add(new CardInput(2515, 242830, "WALSH", 85));
+//        playerCardInputList.add(new CardInput(2515, 242830, "WALSH", 85));
         playerCardInputList.add(new CardInput(20031, 50530365, "ZAHA TOTW", 85));
 //        playerCardInputList.add(new CardInput(163, 265242, "ZINSBERGER", 85));
 
@@ -143,6 +168,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(389, 238212, "CAMPBELL", 84));
         playerCardInputList.add(new CardInput(20101, 50578294, "CAQUERET TRIPLE THREAT", 84));
         playerCardInputList.add(new CardInput(19127, 50540066, "CARRASCO", 84));
+        playerCardInputList.add(new CardInput(19795, 50596895, "CARTER FOUNDATIONS", 84));
         playerCardInputList.add(new CardInput(402, 227327, "DABRITZ", 84));
         playerCardInputList.add(new CardInput(331, 202556, "DEPAY", 84));
         playerCardInputList.add(new CardInput(87, 241852, "DIABY", 84));
@@ -151,30 +177,33 @@ public class InputData {
         playerCardInputList.add(new CardInput(2521, 232580, "GABRIEL", 84));
         playerCardInputList.add(new CardInput(2522, 230666, "GABRIEL JESUS", 84));
         playerCardInputList.add(new CardInput(2527, 251566, "GABRIEL MARTINELLI", 84));
+        playerCardInputList.add(new CardInput(20128, 50536834, "GAZZANIGA TOTW", 84));
         playerCardInputList.add(new CardInput(311, 207862, "GINTER", 84));
         playerCardInputList.add(new CardInput(313, 210035, "GRIMALDO", 84));
         playerCardInputList.add(new CardInput(314, 185122, "GULACSI", 84));
 //        playerCardInputList.add(new CardInput(415, 220814, "HERNANDEZ", 84));
 //        playerCardInputList.add(new CardInput(117, 213648, "HOJBJERG", 84));
+        playerCardInputList.add(new CardInput(165, 226979, "ILESTEDT", 84));
         playerCardInputList.add(new CardInput(83, 238074, "JAMES", 84));
         playerCardInputList.add(new CardInput(19091, 50566800, "KADIOGLU FOUNDATIONS", 84));
 //        playerCardInputList.add(new CardInput(333, 193747, "KOKE", 84));
-        playerCardInputList.add(new CardInput(19261, 50569327, "KOLO MUANI", 84));
+//        playerCardInputList.add(new CardInput(19261, 50569327, "KOLO MUANI", 84));
+        playerCardInputList.add(new CardInput(336, 226161, "LLORENTE", 84));
 //        playerCardInputList.add(new CardInput(450, 216435, "LOBOTKA", 84));
 //        playerCardInputList.add(new CardInput(452, 198706, "LUIS ALBERTO", 84));
-        playerCardInputList.add(new CardInput(19103, 50524153, "LUKAKU", 84));
-        playerCardInputList.add(new CardInput(192, 227191, "MARTA TORREJON", 84));
+//        playerCardInputList.add(new CardInput(19103, 50524153, "LUKAKU", 84));
+//        playerCardInputList.add(new CardInput(192, 227191, "MARTA TORREJON", 84));
 //        playerCardInputList.add(new CardInput(316, 189596, "MULLER", 84));
-        playerCardInputList.add(new CardInput(468, 267275, "NAGASATO", 84));
-        playerCardInputList.add(new CardInput(19661, 50552822, "ORSIC FOUNDATIONS", 84));
-        playerCardInputList.add(new CardInput(455, 210008, "RABIOT", 84));
+//        playerCardInputList.add(new CardInput(468, 267275, "NAGASATO", 84));
+//        playerCardInputList.add(new CardInput(19661, 50552822, "ORSIC FOUNDATIONS", 84));
+//        playerCardInputList.add(new CardInput(455, 210008, "RABIOT", 84));
 //        playerCardInputList.add(new CardInput(317, 222492, "SANE", 84));
 //        playerCardInputList.add(new CardInput(470, 227410, "SCOTT", 84));
-        playerCardInputList.add(new CardInput(456, 189881, "SMALLING", 84));
-        playerCardInputList.add(new CardInput(318, 212190, "SULE", 84));
+//        playerCardInputList.add(new CardInput(456, 189881, "SMALLING", 84));
+//        playerCardInputList.add(new CardInput(318, 212190, "SULE", 84));
         playerCardInputList.add(new CardInput(487296, 226491, "TIERNEY EVOLUTIONS III", 84, "11"));
 //        playerCardInputList.add(new CardInput(2516, 189509, "THIAGO", 84));
-        playerCardInputList.add(new CardInput(85, 164240, "THIAGO SILVA", 84));
+//        playerCardInputList.add(new CardInput(85, 164240, "THIAGO SILVA", 84));
         playerCardInputList.add(new CardInput(19790, 50571352, "WAGNER TRAILBLAZERS", 84));
         playerCardInputList.add(new CardInput(19087, 50585065, "WILMS FOUNDATIONS", 84));
 
@@ -184,7 +213,9 @@ public class InputData {
         playerCardInputList.add(new CardInput(473, 247797, "BLUNDELL", 83));
         playerCardInputList.add(new CardInput(497, 224179, "BORJA IGLESIAS", 83));
         playerCardInputList.add(new CardInput(475, 251809, "BOTMAN", 83));
+        playerCardInputList.add(new CardInput(20193, 67350948, "CARLOS CORONEL TOTW", 83));
         playerCardInputList.add(new CardInput(479, 266933, "CARUSO", 83));
+        playerCardInputList.add(new CardInput(480, 227119, "CATLEY", 83));
         playerCardInputList.add(new CardInput(19663, 50542612, "CECCHERINI FOUNDATIONS", 83));
         playerCardInputList.add(new CardInput(481, 213661, "CHRISTENSEN", 83));
         playerCardInputList.add(new CardInput(193, 262531, "CLAUDIA PINA", 83));
@@ -194,8 +225,10 @@ public class InputData {
         playerCardInputList.add(new CardInput(490, 232077, "FRANCH", 83));
         playerCardInputList.add(new CardInput(359, 261773, "FREIGANG", 83));
         playerCardInputList.add(new CardInput(512, 264240, "GAVI", 83));
+        playerCardInputList.add(new CardInput(506, 208093, "GERARD MORENO", 83));
         playerCardInputList.add(new CardInput(494, 247513, "GILLES", 83));
         playerCardInputList.add(new CardInput(328, 216460, "GIMENEZ", 83));
+        playerCardInputList.add(new CardInput(356, 247788, "GWINN", 83));
         playerCardInputList.add(new CardInput(358, 205693, "HALLER", 83));
         playerCardInputList.add(new CardInput(364, 248715, "HEGERING", 83));
         playerCardInputList.add(new CardInput(496, 178603, "HUMMELS", 83));
@@ -206,23 +239,26 @@ public class InputData {
         playerCardInputList.add(new CardInput(502, 229582, "MANCINI", 83));
         playerCardInputList.add(new CardInput(504, 227346, "MBOCK", 83));
         playerCardInputList.add(new CardInput(329, 201153, "MORATA", 83));
+        playerCardInputList.add(new CardInput(507, 243775, "MURPHY", 83));
         playerCardInputList.add(new CardInput(246, 200724, "NACHO", 83));
-        playerCardInputList.add(new CardInput(20035, 50557507, "NIAKHATE TOTW", 83));
+//        playerCardInputList.add(new CardInput(20035, 50557507, "NIAKHATE TOTW", 83));
         playerCardInputList.add(new CardInput(509, 226318, "O'HARA", 83));
         playerCardInputList.add(new CardInput(322, 204638, "ORBAN", 83));
-        playerCardInputList.add(new CardInput(511, 230142, "OYARZABAL", 83));
-        playerCardInputList.add(new CardInput(491, 241464, "PAU TORRES", 83));
-        playerCardInputList.add(new CardInput(19618, 50603899, "PATRI OJEDA FOUNDATIONS", 83));
-        playerCardInputList.add(new CardInput(515, 246178, "PEYRAUD-MAGNIN", 83));
-        playerCardInputList.add(new CardInput(517, 233838, "RAUCH", 83));
+//        playerCardInputList.add(new CardInput(511, 230142, "OYARZABAL", 83));
+//        playerCardInputList.add(new CardInput(491, 241464, "PAU TORRES", 83));
+//        playerCardInputList.add(new CardInput(19618, 50603899, "PATRI OJEDA FOUNDATIONS", 83));
+//        playerCardInputList.add(new CardInput(515, 246178, "PEYRAUD-MAGNIN", 83));
+//        playerCardInputList.add(new CardInput(517, 233838, "RAUCH", 83));
         playerCardInputList.add(new CardInput(20119, 50596533, "REVELLI FOUNDATIONS", 83));
-        playerCardInputList.add(new CardInput(519, 210413, "ROMAGNOLI", 83));
+        playerCardInputList.add(new CardInput(518, 225659, "RODRIGUEZ", 83));
+//        playerCardInputList.add(new CardInput(519, 210413, "ROMAGNOLI", 83));
         playerCardInputList.add(new CardInput(19662, 50529791, "SAMU SAIZ FOUNDATIONS", 83));
 //        playerCardInputList.add(new CardInput(522, 234236, "SCHICK", 83));
 //        playerCardInputList.add(new CardInput(523, 227405, "SCHMIDT", 83));
 //        playerCardInputList.add(new CardInput(524, 262058, "SELLNER", 83));
 //        playerCardInputList.add(new CardInput(477, 189511, "SERGIO BUSQUETS", 83));
 //        playerCardInputList.add(new CardInput(525, 205988, "SHAW", 83));
+        playerCardInputList.add(new CardInput(280, 233747, "SPITSE", 83));
 //        playerCardInputList.add(new CardInput(526, 230869, "UNAI SIMON", 83));
 //        playerCardInputList.add(new CardInput(19794, 50558849, "VICKY LOSADA FOUNDATIONS", 83));
 //        playerCardInputList.add(new CardInput(530, 246430, "VLAHOVIC", 83));
@@ -236,6 +272,7 @@ public class InputData {
         playerCardInputList.add(new CardInput(552, 247811, "ENDO", 82));
         playerCardInputList.add(new CardInput(551, 235410, "EN-NESYRI", 82));
         playerCardInputList.add(new CardInput(624, 241461, "FERRAN TORRES", 82));
+        playerCardInputList.add(new CardInput(273, 216320, "FOFANA", 82));
         playerCardInputList.add(new CardInput(562, 192318, "GOTZE", 82));
         playerCardInputList.add(new CardInput(563, 241546, "GREBOVAL", 82));
         playerCardInputList.add(new CardInput(564, 212096, "GRIFO", 82));
@@ -243,9 +280,11 @@ public class InputData {
         playerCardInputList.add(new CardInput(569, 235790, "HAVERTZ", 82));
         playerCardInputList.add(new CardInput(570, 242024, "HUERTA", 82));
         playerCardInputList.add(new CardInput(595, 232498, "ISI", 82));
+        playerCardInputList.add(new CardInput(571, 226973, "JAKOBSSON", 82));
         playerCardInputList.add(new CardInput(353, 231591, "JAVI GALAN", 82));
         playerCardInputList.add(new CardInput(590, 212814, "JOAO MARIO", 82));
         playerCardInputList.add(new CardInput(537, 223334, "JOELINTON", 82));
+        playerCardInputList.add(new CardInput(575, 226325, "KRIEGER", 82));
         playerCardInputList.add(new CardInput(577, 219522, "LEDESMA", 82));
         playerCardInputList.add(new CardInput(335, 213565, "LEMAR", 82));
         playerCardInputList.add(new CardInput(579, 241671, "LIVAKOVIC", 82));
@@ -256,19 +295,28 @@ public class InputData {
         playerCardInputList.add(new CardInput(584, 267339, "MACE", 82));
         playerCardInputList.add(new CardInput(267, 234642, "MENDY", 82));
         playerCardInputList.add(new CardInput(352, 233084, "MOLINA", 82));
+        playerCardInputList.add(new CardInput(419, 252145, "NUNO MENDES", 82));
+        playerCardInputList.add(new CardInput(593, 192366, "OTAMENDI", 82));
         playerCardInputList.add(new CardInput(275, 210411, "OTAVIO", 82));
         playerCardInputList.add(new CardInput(598, 236428, "PERISSET", 82));
+        playerCardInputList.add(new CardInput(119, 232488, "ROMERO", 82));
         playerCardInputList.add(new CardInput(327, 204639, "SAVIC", 82));
         playerCardInputList.add(new CardInput(611, 226985, "SCHOUGH", 82));
         playerCardInputList.add(new CardInput(613, 226991, "SEMBRANT", 82));
         playerCardInputList.add(new CardInput(617, 245839, "SUGITA", 82));
         playerCardInputList.add(new CardInput(618, 236772, "SZOBOSZLAI", 82));
         playerCardInputList.add(new CardInput(625, 244369, "TSYGANKOV", 82));
-        playerCardInputList.add(new CardInput(630, 212188, "WERNER", 82));
+//        playerCardInputList.add(new CardInput(626, 223197, "UNAL", 82)); IIIII
 //        playerCardInputList.add(new CardInput(628, 233751, "VAN DE DONK", 82));
 //        playerCardInputList.add(new CardInput(124, 240091, "VICARIO", 82));
+//        playerCardInputList.add(new CardInput(630, 212188, "WERNER", 82));
+
 
         playerCardInputList.add(new CardInput(634, 208920, "AKE", 81));
+        playerCardInputList.add(new CardInput(639, 235844, "ALVAREZ", 81));
+        playerCardInputList.add(new CardInput(641, 272005, "ANDONOVA", 81));
+        playerCardInputList.add(new CardInput(699, 255475, "ANTONY", 81));
+        playerCardInputList.add(new CardInput(642, 206511, "ARNOLD", 81));
         playerCardInputList.add(new CardInput(643, 263578, "BALDE", 81));
         playerCardInputList.add(new CardInput(673, 251892, "BETO", 81));
         playerCardInputList.add(new CardInput(645, 265857, "BILBAULT", 81));
@@ -284,7 +332,9 @@ public class InputData {
         playerCardInputList.add(new CardInput(660, 236276, "DANJUMA", 81));
         playerCardInputList.add(new CardInput(722, 219693, "DIEGO CARLOS", 81));
         playerCardInputList.add(new CardInput(717, 226271, "FABIAN RUIZ", 81));
+        playerCardInputList.add(new CardInput(663, 209297, "FRED", 81));
         playerCardInputList.add(new CardInput(672, 239791, "GLAS", 81));
+        playerCardInputList.add(new CardInput(679, 190941, "HRADECKY", 81));
         playerCardInputList.add(new CardInput(733, 216201, "INAKI WILLIAMS", 81));
         playerCardInputList.add(new CardInput(680, 198219, "INSIGNE", 81));
         playerCardInputList.add(new CardInput(683, 232730, "KAMADA", 81));
@@ -295,12 +345,14 @@ public class InputData {
         playerCardInputList.add(new CardInput(694, 226316, "LEROUX", 81));
         playerCardInputList.add(new CardInput(123, 226226, "LO CELSO", 81));
         playerCardInputList.add(new CardInput(19170, 50553640, "LOZANO", 81));
+        playerCardInputList.add(new CardInput(654, 233927, "LUCAS PAQUETA", 81));
         playerCardInputList.add(new CardInput(254, 208618, "LUCAS VAZQUEZ", 81));
         playerCardInputList.add(new CardInput(726, 204614, "MARIO RUI", 81));
+        playerCardInputList.add(new CardInput(649, 237288, "MARIONA", 81));
         playerCardInputList.add(new CardInput(701, 175943, "MERTENS", 81));
         playerCardInputList.add(new CardInput(702, 267272, "MILAZZO", 81));
         playerCardInputList.add(new CardInput(703, 205175, "MILIK", 81));
-        playerCardInputList.add(new CardInput(18904, 50586648, "MOFFI TOTW", 81));
+//        playerCardInputList.add(new CardInput(18904, 50586648, "MOFFI TOTW", 81));
         playerCardInputList.add(new CardInput(706, 189575, "MUNIAIN", 81));
         playerCardInputList.add(new CardInput(711, 235659, "PARRIS", 81));
         playerCardInputList.add(new CardInput(120, 243576, "PEDRO PORRO", 81));
@@ -308,15 +360,17 @@ public class InputData {
         playerCardInputList.add(new CardInput(713, 216409, "POLITANO", 81));
         playerCardInputList.add(new CardInput(715, 168651, "RAKITIC", 81));
         playerCardInputList.add(new CardInput(351, 236045, "REINILDO", 81));
+        playerCardInputList.add(new CardInput(438, 204883, "SAMBA", 81));
         playerCardInputList.add(new CardInput(719, 244675, "SANCET", 81));
-        playerCardInputList.add(new CardInput(723, 233195, "SCHLAGER", 81));
-        playerCardInputList.add(new CardInput(19094, 50495235, "SCHMEICHEL", 81));
-        playerCardInputList.add(new CardInput(730, 247263, "TAPSOBA", 81));
-        playerCardInputList.add(new CardInput(429, 236786, "TERRIER", 81));
-        playerCardInputList.add(new CardInput(731, 207421, "TROSSARD", 81));
+//        playerCardInputList.add(new CardInput(19234, 50566821, "SANGARE", 81));
+//        playerCardInputList.add(new CardInput(723, 233195, "SCHLAGER", 81));
+//        playerCardInputList.add(new CardInput(19094, 50495235, "SCHMEICHEL", 81));
+//        playerCardInputList.add(new CardInput(730, 247263, "TAPSOBA", 81));
+//        playerCardInputList.add(new CardInput(429, 236786, "TERRIER", 81));
+//        playerCardInputList.add(new CardInput(731, 207421, "TROSSARD", 81));
 //        playerCardInputList.add(new CardInput(422, 253306, "UGARTE", 81));
 //        playerCardInputList.add(new CardInput(19144, 50543638, "VLACHODIMOS", 81));
-        playerCardInputList.add(new CardInput(19155, 50546981, "ZAPATA", 81));
+//        playerCardInputList.add(new CardInput(19155, 50546981, "ZAPATA", 81));
     }
 
     protected static void populateTactics() {
@@ -336,169 +390,169 @@ public class InputData {
                         CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
                 new PositionRole(CDM, BOX_TO_BOX), new PositionRole(CAM, WINGER_R), new PositionRole(CAM, WINGER_L),
                 new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "4-2-4" , Arrays.asList(new PositionRole(GK, KEEPER),
-//                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
-//                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CM, POWERFUL_DM),
-//                new PositionRole(CM, BOX_TO_BOX), new PositionRole(RW, WINGER_R), new PositionRole(LW, WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, COMPLETE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "4-3-1-2" , Arrays.asList(new PositionRole(GK, KEEPER),
-//                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
-//                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CM, BOX_TO_BOX),
-//                new PositionRole(CM, POWERFUL_DM), new PositionRole(CM, BOX_TO_BOX), new PositionRole(CAM,
-//                        PLAYMAKER), new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "4-4-2" , Arrays.asList(new PositionRole(GK, KEEPER),
-//                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
-//                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(RM, WINGER_R),
-//                new PositionRole(CM, POWERFUL_DM), new PositionRole(CM, BOX_TO_BOX), new PositionRole(LM, WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "5-2-1-2" , Arrays.asList(new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
-//                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST , COMPLETE_STRIKER),
-//                new PositionRole(ST, AGILE_STRIKER))));
-        tacticList.add(index++, new Tactic( "5-1-2-2" , Arrays.asList( new PositionRole(GK , KEEPER),
+        tacticList.add(index++, new Tactic( "4-2-4" , Arrays.asList(new PositionRole(GK, KEEPER),
+                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
+                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CM, POWERFUL_DM),
+                new PositionRole(CM, BOX_TO_BOX), new PositionRole(RW, WINGER_R), new PositionRole(LW, WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, COMPLETE_STRIKER))));
+        tacticList.add(index++, new Tactic( "4-3-1-2" , Arrays.asList(new PositionRole(GK, KEEPER),
+                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
+                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CM, BOX_TO_BOX), new PositionRole(CM, BOX_TO_BOX),
+                new PositionRole(CM, POWERFUL_DM), new PositionRole(CAM,
+                        PLAYMAKER), new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
+        tacticList.add(index++, new Tactic( "4-4-2" , Arrays.asList(new PositionRole(GK, KEEPER),
+                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
+                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(RM, WINGER_R),
+                new PositionRole(CM, POWERFUL_DM), new PositionRole(CM, BOX_TO_BOX), new PositionRole(LM, WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
+        tacticList.add(index++, new Tactic( "5-2-1-2" , Arrays.asList(new PositionRole(GK , KEEPER),
                 new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
                 new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
-                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM ,
-                        PLAYMAKER),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(ST , COMPLETE_STRIKER),
-                new PositionRole(ST, AGILE_STRIKER) )));
+                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST , COMPLETE_STRIKER),
+                new PositionRole(ST, AGILE_STRIKER))));
+//        tacticList.add(index++, new Tactic( "5-1-2-2" , Arrays.asList( new PositionRole(GK , KEEPER),
+//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
+//                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM ,
+//                        PLAYMAKER),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(ST , COMPLETE_STRIKER),
+//                new PositionRole(ST, AGILE_STRIKER) )));
 
         tacticList.add(index++, new Tactic( "4-1-2-1-2" , Arrays.asList(new PositionRole(GK, KEEPER),
                 new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
                         CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
                 new PositionRole(RM, WINGER_R), new PositionRole(LM, WINGER_L), new PositionRole(CAM, PLAYMAKER),
                 new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "4-4-2(2)" , Arrays.asList(new PositionRole(GK, KEEPER),
-//                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
-//                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
-//                new PositionRole(CDM, BOX_TO_BOX), new PositionRole(RM, WINGER_R), new PositionRole(LM, WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
+        tacticList.add(index++, new Tactic( "4-4-2(2)" , Arrays.asList(new PositionRole(GK, KEEPER),
+                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
+                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
+                new PositionRole(CDM, BOX_TO_BOX), new PositionRole(RM, WINGER_R), new PositionRole(LM, WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER), new PositionRole(ST, AGILE_STRIKER))));
         tacticList.add(index++, new Tactic( "3-1-4-2" , Arrays.asList(new PositionRole(GK, KEEPER),
                 new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
                         CENTRAL_DEFENDER), new PositionRole(CDM, POWERFUL_DM), new PositionRole(RM, ATT_FULLBACK_R),
                 new PositionRole(CM, PLAYMAKER), new PositionRole(CM, BOX_TO_BOX),  new PositionRole(LM ,
                         ATT_FULLBACK_L),  new PositionRole(ST , COMPLETE_STRIKER),  new PositionRole(ST,
                         AGILE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "3-4-1-2" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB  , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
-//                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
-//                        ATT_FULLBACK_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST , COMPLETE_STRIKER),
-//                new PositionRole(ST, AGILE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "3-5-2" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CDM , POWERFUL_DM),
-//                new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(RM , ATT_FULLBACK_R),  new PositionRole(LM ,
-//                        ATT_FULLBACK_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST ,
-//                        COMPLETE_STRIKER),  new PositionRole(ST, AGILE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "4-1-4-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(RM , WINGER_R),  new PositionRole(CM ,
-//                        PLAYMAKER),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-2-3-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(CAM ,
-//                        WINGER_R),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(CAM , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "4-2-3-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(RM ,
-//                        WINGER_R),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(LM , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "4-3-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CM , PLAYMAKER),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(CF , WINGER_R),  new PositionRole(CF , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "4-3-3" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CM , PLAYMAKER),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER))));
-//        tacticList.add(index++, new Tactic( "4-3-3(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-3-3(3)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(CM ,
-//                        PLAYMAKER),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-3-3(4)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(CAM ,
-//                        PLAYMAKER),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-3-3(5)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(RW , AGILE_STRIKER),  new PositionRole(LW , AGILE_STRIKER),
-//                new PositionRole(CF, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-4-1-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(LM , WINGER_L),  new PositionRole(CF , PLAYMAKER),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-4-1-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(LM , WINGER_L),  new PositionRole(CAM , PLAYMAKER),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-5-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(LM ,
-//                        WINGER_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(CAM , PLAYMAKER),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "4-5-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
-//                new PositionRole(RM , WINGER_R),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
-//                        POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "3-4-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
-//                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
-//                        ATT_FULLBACK_L),  new PositionRole(CF , AGILE_STRIKER),  new PositionRole(CF ,
-//                        AGILE_STRIKER),  new PositionRole(ST, COMPLETE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "3-4-3" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER), new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
-//                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
-//                        ATT_FULLBACK_L),  new PositionRole(RW , AGILE_STRIKER),  new PositionRole(ST ,
-//                        COMPLETE_STRIKER),  new PositionRole(LW, AGILE_STRIKER ))));
-//        tacticList.add(index++, new Tactic( "5-2-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
-//                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
-//                        BOX_TO_BOX),  new PositionRole(RW , AGILE_STRIKER), new PositionRole(LW , AGILE_STRIKER),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index++, new Tactic( "5-4-1" , Arrays.asList( new PositionRole(GK , KEEPER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
-//                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
-//                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(RM , WINGER_R),  new PositionRole(CM ,
-//                        POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
-//                new PositionRole(ST, COMPLETE_STRIKER) )));
-//        tacticList.add(index, new Tactic( "4-2-1-3" , Arrays.asList( new PositionRole(GK, KEEPER),
-//                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
-//                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
-//                new PositionRole(CDM, BOX_TO_BOX), new PositionRole(CAM, PLAYMAKER), new PositionRole(RW, WINGER_R),
-//                new PositionRole(LW, WINGER_L), new PositionRole(ST, COMPLETE_STRIKER))));
+        tacticList.add(index++, new Tactic( "3-4-1-2" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB  , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
+                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
+                        ATT_FULLBACK_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST , COMPLETE_STRIKER),
+                new PositionRole(ST, AGILE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "3-5-2" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CDM , POWERFUL_DM),
+                new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(RM , ATT_FULLBACK_R),  new PositionRole(LM ,
+                        ATT_FULLBACK_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(ST ,
+                        COMPLETE_STRIKER),  new PositionRole(ST, AGILE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "4-1-4-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(RM , WINGER_R),  new PositionRole(CM ,
+                        PLAYMAKER),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-2-3-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(CAM ,
+                        WINGER_R),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(CAM , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "4-2-3-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(RM ,
+                        WINGER_R),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(LM , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "4-3-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CM , PLAYMAKER),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(CF , WINGER_R),  new PositionRole(CF , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "4-3-3" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CM , PLAYMAKER),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER))));
+        tacticList.add(index++, new Tactic( "4-3-3(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-3-3(3)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CDM , BOX_TO_BOX),  new PositionRole(CM ,
+                        PLAYMAKER),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-3-3(4)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(CAM ,
+                        PLAYMAKER),  new PositionRole(RW , WINGER_R),  new PositionRole(LW , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-3-3(5)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(CDM , POWERFUL_DM),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(RW , AGILE_STRIKER),  new PositionRole(LW , AGILE_STRIKER),
+                new PositionRole(CF, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-4-1-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(LM , WINGER_L),  new PositionRole(CF , PLAYMAKER),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-4-1-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(LM , WINGER_L),  new PositionRole(CAM , PLAYMAKER),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-5-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(RM , WINGER_R),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(LM ,
+                        WINGER_L),  new PositionRole(CAM , PLAYMAKER),  new PositionRole(CAM , PLAYMAKER),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "4-5-1(2)" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(RB , DEF_FULLBACK_R),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(LB , DEF_FULLBACK_L),
+                new PositionRole(RM , WINGER_R),  new PositionRole(CM , PLAYMAKER),  new PositionRole(CM ,
+                        POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "3-4-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
+                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
+                        ATT_FULLBACK_L),  new PositionRole(CF , AGILE_STRIKER),  new PositionRole(CF ,
+                        AGILE_STRIKER),  new PositionRole(ST, COMPLETE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "3-4-3" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER), new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RM , ATT_FULLBACK_R),
+                new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM ,
+                        ATT_FULLBACK_L),  new PositionRole(RW , AGILE_STRIKER),  new PositionRole(ST ,
+                        COMPLETE_STRIKER),  new PositionRole(LW, AGILE_STRIKER ))));
+        tacticList.add(index++, new Tactic( "5-2-2-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
+                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(CM , POWERFUL_DM),  new PositionRole(CM ,
+                        BOX_TO_BOX),  new PositionRole(RW , AGILE_STRIKER), new PositionRole(LW , AGILE_STRIKER),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index++, new Tactic( "5-4-1" , Arrays.asList( new PositionRole(GK , KEEPER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(CB , CENTRAL_DEFENDER),
+                new PositionRole(CB , CENTRAL_DEFENDER),  new PositionRole(RWB , ATT_FULLBACK_R),
+                new PositionRole(LWB , ATT_FULLBACK_L),  new PositionRole(RM , WINGER_R),  new PositionRole(CM ,
+                        POWERFUL_DM),  new PositionRole(CM , BOX_TO_BOX),  new PositionRole(LM , WINGER_L),
+                new PositionRole(ST, COMPLETE_STRIKER) )));
+        tacticList.add(index, new Tactic( "4-2-1-3" , Arrays.asList( new PositionRole(GK, KEEPER),
+                new PositionRole(RB, DEF_FULLBACK_R), new PositionRole(CB, CENTRAL_DEFENDER), new PositionRole(CB,
+                        CENTRAL_DEFENDER), new PositionRole(LB, DEF_FULLBACK_L), new PositionRole(CDM, POWERFUL_DM),
+                new PositionRole(CDM, BOX_TO_BOX), new PositionRole(CAM, PLAYMAKER), new PositionRole(RW, WINGER_R),
+                new PositionRole(LW, WINGER_L), new PositionRole(ST, COMPLETE_STRIKER))));
     }
 
     protected static void populateManagers() {
@@ -517,6 +571,9 @@ public class InputData {
         managerList.add(new Manager("R. LUCESCU", "Romania", 63));
         managerList.add(new Manager("R. SCHMIDT", "Germany", 308));
         managerList.add(new Manager("R. VIDOSIC", "Croatia", 351));
+        managerList.add(new Manager("S. PIOLI", "Italy", 31));
+        managerList.add(new Manager("T. FRANK", "Denmark", 13));
+        managerList.add(new Manager("W. KIRK", "Scotland", 2216));
         managerList.add(new Manager("X. MASSASWABI", "Gambia", 31));
     }
 }

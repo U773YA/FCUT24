@@ -474,6 +474,9 @@ public class Main extends InputData {
 //        }
         List<TeamPlayer> playerList = team.getPlayers();
         List<Integer> playerIds = playerList.stream().map(TeamPlayer::getPlayerId).toList();
+        if (playerIds.contains(18950)) {
+            System.out.println("");
+        }
         Map<String, Integer> nationMap = new HashMap<>();
         Map<Integer, Integer> leagueMap = new HashMap<>();
         Map<Integer, Integer> clubMap = new HashMap<>();
