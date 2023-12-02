@@ -30,6 +30,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -203,11 +204,36 @@ public class SquadBuilder extends InputData {
                 }
             }
         }
+        Map<Integer, Integer> playerIdMap = new HashMap<>();
+        for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
+            playerIdMap.put(playerCardEntry.getKey(), playerCardEntry.getValue().getId());
+        }
         for (Map.Entry<PositionRole, List<CardScore>> positionRoleListEntry : positionRoleListMap.entrySet()) {
             List<CardScore> cardScoreList = positionRoleListEntry.getValue();
-            cardScoreList =
-                    cardScoreList.stream().sorted(Comparator.comparing(CardScore::getScore).reversed()).limit(5).toList();
-            positionRoleListEntry.setValue(cardScoreList);
+            List<Integer> playersToKeep =
+                    cardScoreList.stream().map(CardScore::getCardId).filter(cardId -> mandatoryPlayers.contains(cardId)).toList();
+            List<CardScore> newCardScoreList = new ArrayList<>(cardScoreList);
+            Map<Integer, CardScore> cardScoreMap = new HashMap<>();
+            for (CardScore cardScore : newCardScoreList){
+                int id = playerCardMap.get(cardScore.getCardId()).getId();
+                if (!cardScoreMap.containsKey(id) || cardScoreMap.get(id).getScore() < cardScore.getScore()) {
+                    cardScoreMap.put(id, cardScore);
+                }
+            }
+            newCardScoreList = new ArrayList<>(cardScoreMap.values());
+            newCardScoreList = newCardScoreList.stream().sorted(Comparator.comparing(CardScore::getScore).reversed())
+                    .limit(5).collect(Collectors.toList());
+            for (Integer player : playersToKeep) {
+                if (newCardScoreList.stream().map(CardScore::getCardId).toList().contains(player)) {
+                    continue;
+                }
+                CardScore cardScore =
+                        cardScoreList.stream().filter(p -> p.getCardId().equals(player)).findFirst().get();
+                newCardScoreList.add(cardScore);
+                newCardScoreList =
+                        newCardScoreList.stream().sorted(Comparator.comparing(CardScore::getScore).reversed()).toList();
+            }
+            positionRoleListEntry.setValue(newCardScoreList);
         }
 
 //        for (Map.Entry<Position, List<Integer>> positionListEntry : playerPositionMap.entrySet()) {
@@ -291,9 +317,9 @@ public class SquadBuilder extends InputData {
         almightyTeams = almightyTeams.stream().sorted(Comparator.comparing(VariationTeam::getTotalRating).reversed())
                 .limit(6)
                 .collect(Collectors.toList());
-        System.out.println("Almighty teams: ");
+        System.out.println("\nAlmighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
-//            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
+            variationTeam.setSubstitutes(tacticList, positionRoleListMap, playerCardMap);
             System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
             System.out.print(variationTeam.getChemistry() + "\t");
             System.out.print(variationTeam.getTotalRating() + "\t");
@@ -321,6 +347,9 @@ public class SquadBuilder extends InputData {
             System.out.print(playerCard.getName() + " ");
             System.out.println(playerCard.getRating() + " ");
         });
+
+        long elapsedTime = System.nanoTime() - startTime;
+        System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");
     }
 
     public static void build(Tactic tacticToBeConsidered) {
@@ -374,9 +403,6 @@ public class SquadBuilder extends InputData {
         }
 
         possibleTeams = new ArrayList<>();
-
-        long elapsedTime = System.nanoTime() - startTime;
-        System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");
     }
 
     private static void constructVariationTeam(int position, Tactic tactic, VariationTeam team) {
@@ -396,8 +422,11 @@ public class SquadBuilder extends InputData {
 //                System.out.println("break");
 //            }
 //            List<String> countryList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getNation()).toList();
-//            List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p).getLeagueId()).toList();
-//            if (Collections.frequency(countryList, "England") < 3) {
+//            List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
+//            if (Collections.frequency(leagueList, 31) < 3) {
+//                return;
+//            }
+//            if (Collections.frequency(countryList, "Portugal") < 1) {
 //                return;
 //            }
             validateTeams(team);
@@ -511,6 +540,11 @@ public class SquadBuilder extends InputData {
                 leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
             }
             clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
+            if (playerCard.getName().contains("RADIOACTIVE")) {
+                nationMap.merge(playerCard.getNation(), 1, Integer::sum);
+                leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
+                clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
+            }
         });
         leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + iconCount.get()));
         List<VariationTeam> allTeams = new ArrayList<>();
@@ -522,7 +556,7 @@ public class SquadBuilder extends InputData {
                         nationMap.merge(manager.getNation(), 1, Integer::sum);
                         leagueMap.merge(manager.getLeague(), 1, Integer::sum);
                         int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < 25) {
+                        if (chemistry < chemistryCap) {
                             nationMap.merge(manager.getNation(), -1, Integer::sum);
                             leagueMap.merge(manager.getLeague(), -1, Integer::sum);
                             continue;
@@ -548,7 +582,7 @@ public class SquadBuilder extends InputData {
                         nationMap.merge(manager.getNation(), 1, Integer::sum);
                         leagueMap.merge(manager.getLeague(), 1, Integer::sum);
                         int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < 25) {
+                        if (chemistry < chemistryCap) {
                             nationMap.merge(manager.getNation(), -1, Integer::sum);
                             leagueMap.merge(manager.getLeague(), -1, Integer::sum);
                             continue;
@@ -569,7 +603,7 @@ public class SquadBuilder extends InputData {
         Optional<VariationTeam> optBestTeam = allTeams.stream().max(Comparator.comparing(VariationTeam::getChemistry));
         if (optBestTeam.isPresent()) {
             VariationTeam bestTeam = optBestTeam.get();
-            if (bestTeam.getChemistry() >= 25) {
+            if (bestTeam.getChemistry() >= chemistryCap) {
                 possibleTeams.add(bestTeam);
                 if (possibleTeams.size() % 100000 == 0) {
                     System.out.println("No. of teams : " + possibleTeams.size());
@@ -600,7 +634,7 @@ public class SquadBuilder extends InputData {
             totalChemistry = totalChemistry + playerChem;
             player.setChemistry(playerChem);
             chemDeficit += 3 - playerChem;
-            if (chemDeficit > 8) {
+            if (chemDeficit > (33 - chemistryCap)) {
                 break;
             }
         }

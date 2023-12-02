@@ -114,15 +114,14 @@ public class VariationTeam {
         return teamString.toString();
     }
 
-    public void setSubstitutes(List<Tactic> tacticList, Map<Role, List<CardScore>> roleListMap, Map<Integer,
+    public void setSubstitutes(List<Tactic> tacticList, Map<PositionRole, List<CardScore>> roleListMap, Map<Integer,
             PlayerCard> playerCardMap) {
         List<CardScore> substituteScores = new ArrayList<>();
         List<Integer> substitutesList = new ArrayList<>();
         List<Integer> playerList = players.stream().map(TeamPlayer::getPlayerId).toList();
-        Set<Role> roles =
-                tacticList.get(tactic).getPositionRoles().stream().map(PositionRole::getRole).collect(Collectors.toSet());
-        for (Role role : roles) {
-            List<CardScore> cardScoreList = roleListMap.get(role);
+        Set<PositionRole> positionRoles = new HashSet<>(tacticList.get(tactic).getPositionRoles());
+        for (PositionRole positionRole : positionRoles) {
+            List<CardScore> cardScoreList = roleListMap.get(positionRole);
             for (CardScore cardScore : cardScoreList) {
                 if (substitutesList.contains(cardScore.getCardId()) || playerList.contains(cardScore.getCardId())) {
                     continue;

@@ -277,7 +277,7 @@ public class Main extends InputData {
                 .collect(Collectors.toList());
         System.out.println("Almighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
-            variationTeam.setSubstitutes(tacticList, roleScoreMap, playerCardMap);
+            variationTeam.setSubstitutes(tacticList, positionRoleListMap, playerCardMap);
             System.out.print(variationTeam.toString(playerCardMap, tacticList, playerPositionMap) + "\t\t");
             System.out.print(variationTeam.getChemistry() + "\t");
             System.out.print(variationTeam.getTotalRating() + "\t");
