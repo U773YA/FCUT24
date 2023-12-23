@@ -343,7 +343,17 @@ public class SquadBuilder extends InputData {
                 .map(Map.Entry::getValue)
                 .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
                 .toList();
-        playersToBeThrown.forEach(playerCard -> {
+        List<PlayerCard> unimportantPlayers = new ArrayList<>();
+        for(int i = 99; i >= 1; i--) {
+            int finalI = i;
+            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
+            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
+                    .mapToDouble(MetaInfo::getMetaRating)
+                    .max()
+                    .orElse(Double.NEGATIVE_INFINITY)));
+            unimportantPlayers.addAll(list);
+        }
+        unimportantPlayers.forEach(playerCard -> {
             System.out.print(playerCard.getName() + " ");
             System.out.println(playerCard.getRating() + " ");
         });
@@ -410,10 +420,10 @@ public class SquadBuilder extends InputData {
         if (position >= 11) {
             teamCounter++;
             double percentage = teamCounter / (double) allTeamsCount * 100.0;
-            if (teamCounter % 500000 == 0) {
-                System.out.println("Percentage completed : " + percentage + " VariationTeams : " + teamCounter + " " +
-                        "ETA: " + calculateETA(percentage,startTime) +" s");
-            }
+//            if (teamCounter % 500000 == 0) {
+//                System.out.println("Percentage completed : " + percentage + " VariationTeams : " + teamCounter + " " +
+//                        "ETA: " + calculateETA(percentage,startTime) +" s");
+//            }
             List<Integer> teamPlayerCardIds = team.getPlayers().stream().map(TeamPlayer::getPlayerId).toList();
             if (!mandatoryPlayers.isEmpty() && !new HashSet<>(teamPlayerCardIds).containsAll(mandatoryPlayers)) {
                 return;
@@ -426,7 +436,7 @@ public class SquadBuilder extends InputData {
 //            if (Collections.frequency(leagueList, 31) < 3) {
 //                return;
 //            }
-//            if (Collections.frequency(countryList, "Portugal") < 1) {
+//            if (Collections.frequency(countryList, "Spain") < 1) {
 //                return;
 //            }
             validateTeams(team);
@@ -615,7 +625,8 @@ public class SquadBuilder extends InputData {
     private static int calculateChemistry(List<TeamPlayer> playerList, Map<String, Integer> nationMap, Map<Integer, Integer> leagueMap, Map<Integer, Integer> clubMap) {
         int totalChemistry = 0;
         int chemDeficit = 0;
-        for (TeamPlayer player : playerList) {
+        for (int i = playerList.size() - 1; i >= 0; i--) {
+            TeamPlayer player = playerList.get(i);
             int chem = 0;
             PlayerCard playerCard = playerCardMap.get(player.getPlayerId());
             if (playerCard.getClubId().equals(114605) || playerCard.getClubId().equals(112658) || playerCard.getName().contains("PREMIUM")) {
