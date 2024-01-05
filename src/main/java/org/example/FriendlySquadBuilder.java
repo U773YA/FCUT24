@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,10 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -59,7 +56,8 @@ import static org.example.util.CombinationHelper.combination;
 import static org.example.util.CombinationHelper.getCombinations;
 import static org.example.util.CombinationHelper.getFrequencyForPositionRoles;
 
-public class SquadBuilder extends InputData {
+public class FriendlySquadBuilder extends InputData {
+
     private static final Logger LOG = LogManager.getLogger(PlayerCard.class);
     public static Map<Integer, PlayerCard> dbPlayerCardMap = new HashMap<>();
     public static List<PlayerCard> dbPlayerCardEvoList = new ArrayList<>();
@@ -232,42 +230,6 @@ public class SquadBuilder extends InputData {
             positionRoleListEntry.setValue(newCardScoreList);
         }
 
-//        for (Map.Entry<Position, List<Integer>> positionListEntry : playerPositionMap.entrySet()) {
-//            Position position = positionListEntry.getKey();
-//            List<Role> positionRoles = positionRoleMap.get(position);
-//            List<Pair> scoreList = new ArrayList<>();
-//            for (Integer player : positionListEntry.getValue()) {
-//                PlayerCard playerCard = playerCardMap.get(player);
-//                boolean isGK = position == GK;
-//                boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
-//                List<MetaInfo> metaInfoList = playerCard.getMetaInfoList();
-//                Double score = 0.0;
-//                for (Role role : positionRoles) {
-//                    MetaInfo roleMetaInfo = new MetaInfo();
-//                    try {
-//                        roleMetaInfo = metaInfoList.stream()
-//                                .filter(metaInfo -> {
-//                                    if (isGK) {
-//                                        return metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3;
-//                                    }
-//                                    return isEvo ?
-//                                            metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3 :
-//                                            metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.getChemistry() == 3
-//                                                    && metaInfo.isBestChemstyleAtChem();
-//                                })
-//                                .findFirst().get();
-//                    } catch (Exception ex) {
-//                        LOG.error("Failed for " + playerCard.getName() + ", " + role.getArchetypeId());
-//                    }
-//                    score += roleMetaInfo.getMetaRating();
-//                }
-//                Pair pair = new Pair(player, score / positionRoles.size());
-//                scoreList.add(pair);
-//            }
-//            scoreList = scoreList.stream().sorted(Comparator.comparing(Pair::getSecond).reversed()).limit(5).toList();
-//            positionListEntry.setValue(scoreList.stream().map(Pair::getFirst).toList());
-//        }
-
         System.out.println("\nBest players in each position role: ");
         positionRoleListMap.forEach((key, value) -> {
             System.out.print(key + " -> ");
@@ -291,15 +253,6 @@ public class SquadBuilder extends InputData {
                 positionRoleListMap.get(new PositionRole(CAM, PLAYMAKER)).size(), 2, cam_cam2);
         getCombinations(positionRoleListMap.get(new PositionRole(CF, AGILE_STRIKER)).stream().map(CardScore::getCardId).toList(),
                 positionRoleListMap.get(new PositionRole(CF, AGILE_STRIKER)).size(), 2, cf_rat2);
-
-//        getCombinations(playerPositionMap.get(CB), playerPositionMap.get(CB).size(), 2, cb2);
-//        getCombinations(playerPositionMap.get(CB), playerPositionMap.get(CB).size(), 3, cb3);
-//        getCombinations(playerPositionMap.get(CM), playerPositionMap.get(CM).size(), 2, cm2);
-//        getCombinations(playerPositionMap.get(ST), playerPositionMap.get(ST).size(), 2, st2);
-//        getCombinations(playerPositionMap.get(CF), playerPositionMap.get(CF).size(), 2, cf2);
-//        getCombinations(playerPositionMap.get(CDM), playerPositionMap.get(CDM).size(), 2, cdm2);
-//        getCombinations(playerPositionMap.get(CAM), playerPositionMap.get(CAM).size(), 2, cam2);
-//        getCombinations(playerPositionMap.get(CM), playerPositionMap.get(CM).size(), 3, cm3);
 
         for (Tactic tactic : tacticList
 //                .stream()
@@ -520,117 +473,126 @@ public class SquadBuilder extends InputData {
 
     private static boolean isConstraintsCheckFailed(VariationTeam team) {
 //        List<String> countryList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getNation()).toList();
-//        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
-//        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
-//        List<String> nameList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getName()).toList();
+        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
+        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
+        List<String> nameList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getName()).toList();
 //        if (Collections.frequency(leagueList, 31) < 3) {
 //            return true;
 //        }
 //        if (Collections.frequency(countryList, "Spain") < 1) {
 //            return true;
 //        }
-
-
-
-        return false;
+        if (ratingList.stream().filter(num -> num >= 88).count() > 1) {
+            return true;
+        }
+        if (new HashSet<>(leagueList).size() < 4) {
+            return true;
+        }
+        return nameList.stream().noneMatch(name -> name.contains("WINTER WILDCARDS"));
+//        return false;
     }
 
     private static void validateTeams(VariationTeam team) {
-//        if (team.getPlayerCalculation() == 497658) {
-//            System.out.println("STOP");
-//        }
-        List<TeamPlayer> playerList = team.getPlayers();
-        List<Integer> playerIds = playerList.stream().map(TeamPlayer::getPlayerId).toList();
-//        if (playerIds.contains(18950)) {
-//            System.out.println("");
-//        }
-        AtomicInteger iconCount = new AtomicInteger();
-        Map<String, Integer> nationMap = new HashMap<>();
-        Map<Integer, Integer> leagueMap = new HashMap<>();
-        Map<Integer, Integer> clubMap = new HashMap<>();
-        playerList.forEach(playerIndex -> {
-            PlayerCard playerCard = playerCardMap.get(playerIndex.getPlayerId());
-            nationMap.merge(playerCard.getNation(), 1, Integer::sum);
-            if (playerCard.getClubId().equals(112658)) {   // ICON club id = 112658
-                nationMap.merge(playerCard.getNation(), 1, Integer::sum);
-//                leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + 1));
-                iconCount.getAndIncrement();
-            }
-            leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
-            if (playerCard.getClubId().equals(114605) || playerCard.getName().contains("PREMIUM")) {  // Hero club id = 114605
-                leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
-            }
-            clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
-            if (playerCard.getName().contains("RADIOACTIVE")) {
-                nationMap.merge(playerCard.getNation(), 1, Integer::sum);
-                leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
-                clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
-            }
-        });
-        leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + iconCount.get()));
-        List<VariationTeam> allTeams = new ArrayList<>();
-        for (Map.Entry<String, Integer> nationEntry : nationMap.entrySet()) {
-            if (Arrays.asList(1, 4, 7).contains(nationEntry.getValue())) {
-                List<Manager> managers = nationManagerMap.get(nationEntry.getKey());
-                if (managers != null) {
-                    for (Manager manager : managers) {
-                        nationMap.merge(manager.getNation(), 1, Integer::sum);
-                        leagueMap.merge(manager.getLeague(), 1, Integer::sum);
-                        int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < chemistryCap) {
-                            nationMap.merge(manager.getNation(), -1, Integer::sum);
-                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
-                            continue;
-                        }
-                        VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
-                        double rating = calculateTeamTotalRating(newTeam.getPlayers(), newTeam.getSubstitutes(), newTeam.getTactic());
-                        newTeam.setChemistry(chemistry);
-                        newTeam.setTotalRating(rating);
-                        newTeam.setScore();
-                        newTeam.setManager(manager);
-                        allTeams.add(newTeam);
-                        nationMap.merge(manager.getNation(), -1, Integer::sum);
-                        leagueMap.merge(manager.getLeague(), -1, Integer::sum);
-                    }
-                }
-            }
-        }
-        for (Map.Entry<Integer, Integer> leagueEntry : leagueMap.entrySet()) {
-            if (Arrays.asList(2, 4, 7).contains(leagueEntry.getValue())) {
-                List<Manager> managers = leagueManagerMap.get(leagueEntry.getKey());
-                if (managers != null) {
-                    for (Manager manager : managers) {
-                        nationMap.merge(manager.getNation(), 1, Integer::sum);
-                        leagueMap.merge(manager.getLeague(), 1, Integer::sum);
-                        int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
-                        if (chemistry < chemistryCap) {
-                            nationMap.merge(manager.getNation(), -1, Integer::sum);
-                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
-                            continue;
-                        }
-                        VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
-                        double rating = calculateTeamTotalRating(newTeam.getPlayers(), newTeam.getSubstitutes(), newTeam.getTactic());
-                        newTeam.setChemistry(chemistry);
-                        newTeam.setTotalRating(rating);
-                        newTeam.setScore();
-                        newTeam.setManager(manager);
-                        allTeams.add(newTeam);
-                        nationMap.merge(manager.getNation(), -1, Integer::sum);
-                        leagueMap.merge(manager.getLeague(), -1, Integer::sum);
-                    }
-                }
-            }
-        }
-        Optional<VariationTeam> optBestTeam = allTeams.stream().max(Comparator.comparing(VariationTeam::getChemistry));
-        if (optBestTeam.isPresent()) {
-            VariationTeam bestTeam = optBestTeam.get();
-            if (bestTeam.getChemistry() >= chemistryCap) {
-                possibleTeams.add(bestTeam);
-//                if (possibleTeams.size() % 100000 == 0) {
-//                    System.out.println("No. of teams : " + possibleTeams.size());
+////        if (team.getPlayerCalculation() == 497658) {
+////            System.out.println("STOP");
+////        }
+//        List<TeamPlayer> playerList = team.getPlayers();
+//        List<Integer> playerIds = playerList.stream().map(TeamPlayer::getPlayerId).toList();
+////        if (playerIds.contains(18950)) {
+////            System.out.println("");
+////        }
+//        AtomicInteger iconCount = new AtomicInteger();
+//        Map<String, Integer> nationMap = new HashMap<>();
+//        Map<Integer, Integer> leagueMap = new HashMap<>();
+//        Map<Integer, Integer> clubMap = new HashMap<>();
+//        playerList.forEach(playerIndex -> {
+//            PlayerCard playerCard = playerCardMap.get(playerIndex.getPlayerId());
+//            nationMap.merge(playerCard.getNation(), 1, Integer::sum);
+//            if (playerCard.getClubId().equals(112658)) {   // ICON club id = 112658
+//                nationMap.merge(playerCard.getNation(), 1, Integer::sum);
+////                leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + 1));
+//                iconCount.getAndIncrement();
+//            }
+//            leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
+//            if (playerCard.getClubId().equals(114605) || playerCard.getName().contains("PREMIUM")) {  // Hero club id = 114605
+//                leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
+//            }
+//            clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
+//            if (playerCard.getName().contains("RADIOACTIVE")) {
+//                nationMap.merge(playerCard.getNation(), 1, Integer::sum);
+//                leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
+//                clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
+//            }
+//        });
+//        leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + iconCount.get()));
+//        List<VariationTeam> allTeams = new ArrayList<>();
+//        for (Map.Entry<String, Integer> nationEntry : nationMap.entrySet()) {
+//            if (Arrays.asList(1, 4, 7).contains(nationEntry.getValue())) {
+//                List<Manager> managers = nationManagerMap.get(nationEntry.getKey());
+//                if (managers != null) {
+//                    for (Manager manager : managers) {
+//                        nationMap.merge(manager.getNation(), 1, Integer::sum);
+//                        leagueMap.merge(manager.getLeague(), 1, Integer::sum);
+//                        int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
+//                        if (chemistry < chemistryCap) {
+//                            nationMap.merge(manager.getNation(), -1, Integer::sum);
+//                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
+//                            continue;
+//                        }
+//                        VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
+//                        double rating = calculateTeamTotalRating(newTeam.getPlayers(), newTeam.getSubstitutes(), newTeam.getTactic());
+//                        newTeam.setChemistry(chemistry);
+//                        newTeam.setTotalRating(rating);
+//                        newTeam.setScore();
+//                        newTeam.setManager(manager);
+//                        allTeams.add(newTeam);
+//                        nationMap.merge(manager.getNation(), -1, Integer::sum);
+//                        leagueMap.merge(manager.getLeague(), -1, Integer::sum);
+//                    }
 //                }
-            }
-        }
+//            }
+//        }
+//        for (Map.Entry<Integer, Integer> leagueEntry : leagueMap.entrySet()) {
+//            if (Arrays.asList(2, 4, 7).contains(leagueEntry.getValue())) {
+//                List<Manager> managers = leagueManagerMap.get(leagueEntry.getKey());
+//                if (managers != null) {
+//                    for (Manager manager : managers) {
+//                        nationMap.merge(manager.getNation(), 1, Integer::sum);
+//                        leagueMap.merge(manager.getLeague(), 1, Integer::sum);
+//                        int chemistry = calculateChemistry(playerList, nationMap, leagueMap, clubMap);
+//                        if (chemistry < chemistryCap) {
+//                            nationMap.merge(manager.getNation(), -1, Integer::sum);
+//                            leagueMap.merge(manager.getLeague(), -1, Integer::sum);
+//                            continue;
+//                        }
+//                        VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
+//                        double rating = calculateTeamTotalRating(newTeam.getPlayers(), newTeam.getSubstitutes(), newTeam.getTactic());
+//                        newTeam.setChemistry(chemistry);
+//                        newTeam.setTotalRating(rating);
+//                        newTeam.setScore();
+//                        newTeam.setManager(manager);
+//                        allTeams.add(newTeam);
+//                        nationMap.merge(manager.getNation(), -1, Integer::sum);
+//                        leagueMap.merge(manager.getLeague(), -1, Integer::sum);
+//                    }
+//                }
+//            }
+//        }
+//        Optional<VariationTeam> optBestTeam = allTeams.stream().max(Comparator.comparing(VariationTeam::getChemistry));
+//        if (optBestTeam.isPresent()) {
+//            VariationTeam bestTeam = optBestTeam.get();
+//            if (bestTeam.getChemistry() >= chemistryCap) {
+//                possibleTeams.add(bestTeam);
+////                if (possibleTeams.size() % 100000 == 0) {
+////                    System.out.println("No. of teams : " + possibleTeams.size());
+////                }
+//            }
+//        }
+        VariationTeam newTeam = new VariationTeam(team.getTactic(), new ArrayList<>(team.getPlayers()));
+        double rating = calculateTeamTotalRating(newTeam.getPlayers(), newTeam.getSubstitutes(), newTeam.getTactic());
+        newTeam.setTotalRating(rating);
+        newTeam.setScore();
+        possibleTeams.add(newTeam);
     }
 
     private static int calculateChemistry(List<TeamPlayer> playerList, Map<String, Integer> nationMap, Map<Integer, Integer> leagueMap, Map<Integer, Integer> clubMap) {
@@ -677,9 +639,7 @@ public class SquadBuilder extends InputData {
 
             if (position == GK) {
                 double score = playerCard.getMetaInfoList().stream()
-                        .filter(metaInfo -> (teamPlayer.getChemistry() == 0) ?
-                                (metaInfo.getChemistry() == 0 && metaInfo.getChemstyleId() == 250) :
-                                (metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == teamPlayer.getChemistry()))
+                        .filter(metaInfo -> metaInfo.getChemstyleId() == GLOVE.getValue() && metaInfo.getChemistry() == 3)
                         .findFirst().get().getMetaRating();
                 totalTeamRating += score;
                 i++;
@@ -688,8 +648,8 @@ public class SquadBuilder extends InputData {
                 boolean isEvo = playerCard.getEvoId() != null && !playerCard.getEvoId().isBlank() && !playerCard.getEvoId().isEmpty();
                 double score = playerCard.getMetaInfoList().stream().filter(metaInfo ->
                                 isEvo ?
-                                        metaInfo.getChemistry() == teamPlayer.getChemistry() && metaInfo.getArchetypeId().equals(role.getArchetypeId()) :
-                                        metaInfo.getChemistry() == teamPlayer.getChemistry() && metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.isBestChemstyleAtChem())
+                                        metaInfo.getChemistry() == 3 && metaInfo.getArchetypeId().equals(role.getArchetypeId()) :
+                                        metaInfo.getChemistry() == 3 && metaInfo.getArchetypeId().equals(role.getArchetypeId()) && metaInfo.isBestChemstyleAtChem())
                         .findFirst().get().getMetaRating();
                 totalTeamRating += score;
                 i++;
