@@ -176,10 +176,10 @@ public class FodderCalculator extends InputData {
                 }
             }
         }
-        Map<Integer, Integer> playerIdMap = new HashMap<>();
-        for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
-            playerIdMap.put(playerCardEntry.getKey(), playerCardEntry.getValue().getId());
-        }
+//        Map<Integer, Integer> playerIdMap = new HashMap<>();
+//        for (Map.Entry<Integer, PlayerCard> playerCardEntry : playerCardMap.entrySet()) {
+//            playerIdMap.put(playerCardEntry.getKey(), playerCardEntry.getValue().getId());
+//        }
         for (Map.Entry<PositionRole, List<CardScore>> positionRoleListEntry : positionRoleListMap.entrySet()) {
             List<CardScore> cardScoreList = positionRoleListEntry.getValue();
             List<Integer> playersToKeep =
@@ -232,23 +232,21 @@ public class FodderCalculator extends InputData {
         getCombinations(positionRoleListMap.get(new PositionRole(CF, AGILE_STRIKER)).stream().map(CardScore::getCardId).toList(),
                 positionRoleListMap.get(new PositionRole(CF, AGILE_STRIKER)).size(), 2, cf_rat2);
 
-        Set<Integer> playersConsidered = positionRoleListMap.values()
+        List<PlayerCard> playerCards = positionRoleListMap.values()
                 .stream()
                 .flatMap(List::stream)
-                .map(p -> playerCardMap.get(p.getCardId()))
-                .sorted(Comparator.comparing(PlayerCard::getName))
-                .map(PlayerCard::getFutBinId)
-                .collect(Collectors.toSet());
+                .map(p -> playerCardMap.get(p.getCardId())).distinct().collect(Collectors.toList());
+        playerCards = playerCards.stream().sorted(Comparator.comparing(PlayerCard::getName)).toList();
 
         System.out.println("\nImportant players: ");
-        playersConsidered.forEach(player -> {
-            PlayerCard playerCard = playerCardMap.get(player);
+        for (PlayerCard playerCard : playerCards) {
             System.out.print(playerCard.getName() + " ");
             System.out.println(playerCard.getRating() + " ");
-        });
+        }
         System.out.println("\nPlayers that can be thrown away: ");
+        Set<Integer> playerIds = playerCards.stream().map(PlayerCard::getFutBinId).collect(Collectors.toSet());
         List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
-                .filter(p -> !playersConsidered.contains(p.getKey()))
+                .filter(p -> !playerIds.contains(p.getKey()))
                 .map(Map.Entry::getValue)
                 .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
                 .toList();
@@ -266,6 +264,16 @@ public class FodderCalculator extends InputData {
             System.out.print(playerCard.getName() + " ");
             System.out.println(playerCard.getRating() + " ");
         });
+
+        double totalMetaRating = 0;
+        for (PlayerCard playerCard : playerCards) {
+            double metaRating = playerCard.getMetaInfoList().stream()
+                    .mapToDouble(MetaInfo::getMetaRating)
+                    .max()
+                    .orElse(Double.NEGATIVE_INFINITY);
+            totalMetaRating += metaRating;
+        }
+        System.out.println("\nAverage Meta Rating of squad : " + (totalMetaRating / playerCards.size()));
 
         long elapsedTime = System.nanoTime() - startTime;
         System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");

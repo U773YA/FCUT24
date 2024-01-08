@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.enums.ChemStyle;
+import org.example.enums.League;
 import org.example.enums.Position;
 import org.example.enums.Role;
 import org.example.model.CardInput;
@@ -311,7 +312,7 @@ public class SquadBuilder extends InputData {
         }
 
         almightyTeams = almightyTeams.stream().sorted(Comparator.comparing(VariationTeam::getTotalRating).reversed())
-                .limit(6)
+                .limit(15)
                 .collect(Collectors.toList());
         System.out.println("\nAlmighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
@@ -322,40 +323,40 @@ public class SquadBuilder extends InputData {
             System.out.println(variationTeam.getScore());
         }
 
-        Set<Integer> playersConsidered = positionRoleListMap.values()
-                .stream()
-                .flatMap(List::stream)
-                .map(p -> playerCardMap.get(p.getCardId()))
-                .sorted(Comparator.comparing(PlayerCard::getName))
-                .map(PlayerCard::getFutBinId)
-                .collect(Collectors.toSet());
+//        Set<PlayerCard> playersConsidered = positionRoleListMap.values()
+//                .stream()
+//                .flatMap(List::stream)
+//                .map(p -> playerCardMap.get(p.getCardId()))
+//                .collect(Collectors.toSet());
+//        List<PlayerCard> playerCards = new ArrayList<>(playersConsidered);
+//        playerCards = playerCards.stream().sorted(Comparator.comparing(PlayerCard::getName)).toList();
 
-        System.out.println("\nImportant players: ");
-        playersConsidered.forEach(player -> {
-            PlayerCard playerCard = playerCardMap.get(player);
-            System.out.print(playerCard.getName() + " ");
-            System.out.println(playerCard.getRating() + " ");
-        });
-        System.out.println("\nPlayers that can be thrown away: ");
-        List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
-                .filter(p -> !playersConsidered.contains(p.getKey()))
-                .map(Map.Entry::getValue)
-                .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
-                .toList();
-        List<PlayerCard> unimportantPlayers = new ArrayList<>();
-        for(int i = 99; i >= 1; i--) {
-            int finalI = i;
-            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
-            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
-                    .mapToDouble(MetaInfo::getMetaRating)
-                    .max()
-                    .orElse(Double.NEGATIVE_INFINITY)));
-            unimportantPlayers.addAll(list);
-        }
-        unimportantPlayers.forEach(playerCard -> {
-            System.out.print(playerCard.getName() + " ");
-            System.out.println(playerCard.getRating() + " ");
-        });
+//        System.out.println("\nImportant players: ");
+//        for (PlayerCard playerCard : playerCards) {
+//            System.out.print(playerCard.getName() + " ");
+//            System.out.println(playerCard.getRating() + " ");
+//        }
+//        System.out.println("\nPlayers that can be thrown away: ");
+//        Set<Integer> playerIds = playerCards.stream().map(PlayerCard::getFutBinId).collect(Collectors.toSet());
+//        List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
+//                .filter(p -> !playerIds.contains(p.getKey()))
+//                .map(Map.Entry::getValue)
+//                .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
+//                .toList();
+//        List<PlayerCard> unimportantPlayers = new ArrayList<>();
+//        for(int i = 99; i >= 1; i--) {
+//            int finalI = i;
+//            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
+//            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
+//                    .mapToDouble(MetaInfo::getMetaRating)
+//                    .max()
+//                    .orElse(Double.NEGATIVE_INFINITY)));
+//            unimportantPlayers.addAll(list);
+//        }
+//        unimportantPlayers.forEach(playerCard -> {
+//            System.out.print(playerCard.getName() + " ");
+//            System.out.println(playerCard.getRating() + " ");
+//        });
 
         long elapsedTime = System.nanoTime() - startTime;
         System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");
@@ -418,7 +419,7 @@ public class SquadBuilder extends InputData {
 //        List<Position> positions = tactic.getPositionRoles().stream().map(PositionRole::getPosition).toList();
         if (position >= 11) {
             teamCounter++;
-            double percentage = teamCounter / (double) allTeamsCount * 100.0;
+//            double percentage = teamCounter / (double) allTeamsCount * 100.0;
 //            if (teamCounter % 500000 == 0) {
 //                System.out.println("Percentage completed : " + percentage + " VariationTeams : " + teamCounter + " " +
 //                        "ETA: " + calculateETA(percentage,startTime) +" s");
@@ -523,7 +524,7 @@ public class SquadBuilder extends InputData {
 //        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
 //        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
 //        List<String> nameList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getName()).toList();
-//        if (Collections.frequency(leagueList, 31) < 3) {
+//        if (Collections.frequency(leagueList, League.LA_LEAGUE_EA_SPORTS.getValue()) < 3) {
 //            return true;
 //        }
 //        if (Collections.frequency(countryList, "Spain") < 1) {
@@ -565,6 +566,12 @@ public class SquadBuilder extends InputData {
                 nationMap.merge(playerCard.getNation(), 1, Integer::sum);
                 leagueMap.merge(playerCard.getLeagueId(), 1, Integer::sum);
                 clubMap.merge(playerCard.getClubId(), 1, Integer::sum);
+            }
+            if (playerCard.getName().contains("VERSUS FIRE")) {
+                nationMap.merge(playerCard.getNation(), 4, Integer::sum);
+            }
+            if (playerCard.getName().contains("VERSUS ICE")) {
+                clubMap.merge(playerCard.getClubId(), 4, Integer::sum);
             }
         });
         leagueMap.forEach((key, value) -> leagueMap.compute(key, (k, v) -> v + iconCount.get()));
