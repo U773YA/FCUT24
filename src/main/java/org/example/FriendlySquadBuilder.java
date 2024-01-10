@@ -264,7 +264,7 @@ public class FriendlySquadBuilder extends InputData {
         }
 
         almightyTeams = almightyTeams.stream().sorted(Comparator.comparing(VariationTeam::getTotalRating).reversed())
-                .limit(6)
+                .limit(15)
                 .collect(Collectors.toList());
         System.out.println("\nAlmighty teams: ");
         for (VariationTeam variationTeam : almightyTeams) {
@@ -274,41 +274,41 @@ public class FriendlySquadBuilder extends InputData {
             System.out.print(variationTeam.getTotalRating() + "\t");
             System.out.println(variationTeam.getScore());
         }
+//
+//        Set<Integer> playersConsidered = positionRoleListMap.values()
+//                .stream()
+//                .flatMap(List::stream)
+//                .map(p -> playerCardMap.get(p.getCardId()))
+//                .sorted(Comparator.comparing(PlayerCard::getName))
+//                .map(PlayerCard::getFutBinId)
+//                .collect(Collectors.toSet());
 
-        Set<Integer> playersConsidered = positionRoleListMap.values()
-                .stream()
-                .flatMap(List::stream)
-                .map(p -> playerCardMap.get(p.getCardId()))
-                .sorted(Comparator.comparing(PlayerCard::getName))
-                .map(PlayerCard::getFutBinId)
-                .collect(Collectors.toSet());
-
-        System.out.println("\nImportant players: ");
-        playersConsidered.forEach(player -> {
-            PlayerCard playerCard = playerCardMap.get(player);
-            System.out.print(playerCard.getName() + " ");
-            System.out.println(playerCard.getRating() + " ");
-        });
-        System.out.println("\nPlayers that can be thrown away: ");
-        List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
-                .filter(p -> !playersConsidered.contains(p.getKey()))
-                .map(Map.Entry::getValue)
-                .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
-                .toList();
-        List<PlayerCard> unimportantPlayers = new ArrayList<>();
-        for(int i = 99; i >= 1; i--) {
-            int finalI = i;
-            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
-            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
-                    .mapToDouble(MetaInfo::getMetaRating)
-                    .max()
-                    .orElse(Double.NEGATIVE_INFINITY)));
-            unimportantPlayers.addAll(list);
-        }
-        unimportantPlayers.forEach(playerCard -> {
-            System.out.print(playerCard.getName() + " ");
-            System.out.println(playerCard.getRating() + " ");
-        });
+//        System.out.println("\nImportant players: ");
+//        playersConsidered.forEach(player -> {
+//            PlayerCard playerCard = playerCardMap.get(player);
+//            System.out.print(playerCard.getName() + " ");
+//            System.out.println(playerCard.getRating() + " ");
+//        });
+//        System.out.println("\nPlayers that can be thrown away: ");
+//        List<PlayerCard> playersToBeThrown = playerCardMap.entrySet().stream()
+//                .filter(p -> !playersConsidered.contains(p.getKey()))
+//                .map(Map.Entry::getValue)
+//                .sorted(Comparator.comparing(PlayerCard::getRating).reversed())
+//                .toList();
+//        List<PlayerCard> unimportantPlayers = new ArrayList<>();
+//        for(int i = 99; i >= 1; i--) {
+//            int finalI = i;
+//            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
+//            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
+//                    .mapToDouble(MetaInfo::getMetaRating)
+//                    .max()
+//                    .orElse(Double.NEGATIVE_INFINITY)));
+//            unimportantPlayers.addAll(list);
+//        }
+//        unimportantPlayers.forEach(playerCard -> {
+//            System.out.print(playerCard.getName() + " ");
+//            System.out.println(playerCard.getRating() + " ");
+//        });
 
         long elapsedTime = System.nanoTime() - startTime;
         System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");
@@ -473,8 +473,8 @@ public class FriendlySquadBuilder extends InputData {
 
     private static boolean isConstraintsCheckFailed(VariationTeam team) {
 //        List<String> countryList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getNation()).toList();
-        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
-        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
+//        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
+//        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
         List<String> nameList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getName()).toList();
 //        if (Collections.frequency(leagueList, 31) < 3) {
 //            return true;
@@ -482,13 +482,13 @@ public class FriendlySquadBuilder extends InputData {
 //        if (Collections.frequency(countryList, "Spain") < 1) {
 //            return true;
 //        }
-        if (ratingList.stream().filter(num -> num >= 88).count() > 1) {
-            return true;
-        }
-        if (new HashSet<>(leagueList).size() < 4) {
-            return true;
-        }
-        return nameList.stream().noneMatch(name -> name.contains("WINTER WILDCARDS"));
+//        if (ratingList.stream().filter(num -> num >= 88).count() > 1) {
+//            return true;
+//        }
+//        if (new HashSet<>(leagueList).size() < 4) {
+//            return true;
+//        }
+        return nameList.stream().noneMatch(name -> name.contains("VERSUS FIRE"));
 //        return false;
     }
 
