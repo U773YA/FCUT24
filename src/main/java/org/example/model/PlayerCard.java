@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.enums.ChemStyle;
 import org.example.enums.Position;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class PlayerCard {
     private Integer leagueId;
     private List<Position> positions = new ArrayList<>();
     private List<MetaInfo> metaInfoList = new ArrayList<>();
+    private ChemStyle chemStyle = null;
 
     public Integer getFutBinId() {
         return futBinId;
@@ -104,5 +106,13 @@ public class PlayerCard {
 
     public void setMetaInfoList(List<MetaInfo> metaInfoList) {
         this.metaInfoList = metaInfoList;
+    }
+
+    public ChemStyle getChemStyle() {
+        return chemStyle;
+    }
+
+    public void setChemStyle(ChemStyle chemStyle) {
+        this.chemStyle = chemStyle;
     }
 }

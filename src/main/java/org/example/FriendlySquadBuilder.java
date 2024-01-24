@@ -216,7 +216,7 @@ public class FriendlySquadBuilder extends InputData {
             }
             newCardScoreList = new ArrayList<>(cardScoreMap.values());
             newCardScoreList = newCardScoreList.stream().sorted(Comparator.comparing(CardScore::getScore).reversed())
-                    .limit(5).collect(Collectors.toList());
+                    .limit(3).collect(Collectors.toList());
             for (Integer player : playersToKeep) {
                 if (newCardScoreList.stream().map(CardScore::getCardId).toList().contains(player)) {
                     continue;
@@ -488,7 +488,7 @@ public class FriendlySquadBuilder extends InputData {
 //        if (new HashSet<>(leagueList).size() < 4) {
 //            return true;
 //        }
-        return nameList.stream().noneMatch(name -> name.contains("VERSUS FIRE"));
+        return nameList.stream().noneMatch(name -> name.contains("VERSUS ICE"));
 //        return false;
     }
 

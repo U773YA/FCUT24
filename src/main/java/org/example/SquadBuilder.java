@@ -524,10 +524,10 @@ public class SquadBuilder extends InputData {
 //        List<Integer> leagueList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getLeagueId()).toList();
 //        List<Integer> ratingList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getRating()).toList();
 //        List<String> nameList = team.getPlayers().stream().map(p -> playerCardMap.get(p.getPlayerId()).getName()).toList();
-//        if (Collections.frequency(leagueList, League.LA_LEAGUE_EA_SPORTS.getValue()) < 3) {
+//        if (Collections.frequency(leagueList, League.PREMIER_LEAGUE.getValue()) < 6) {
 //            return true;
 //        }
-//        if (Collections.frequency(countryList, "Spain") < 1) {
+//        if (Collections.frequency(countryList, "Spain") < 5) {
 //            return true;
 //        }
 

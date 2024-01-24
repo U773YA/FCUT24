@@ -21,8 +21,7 @@ public class VariationTeam {
     private int chemistry;
     private double totalRating;
     private double score;
-    private Manager manager
-            ;
+    private Manager manager;
     private List<Integer> substitutes = new ArrayList<>();
     public VariationTeam(Integer tactic, List<TeamPlayer> players) {
         this.tactic = tactic;

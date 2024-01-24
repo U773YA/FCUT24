@@ -8,6 +8,7 @@ import org.example.model.CardInput;
 import org.example.model.MetaInfo;
 import org.example.model.MetaInfoWrapper;
 import org.example.model.PlayerCard;
+import org.example.model.PriceResult;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,6 +16,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,46 @@ public class Scraper {
 
     public Scraper() {
 
+    }
+
+    public PriceResult getPriceData() {
+        PriceResult priceResult = new PriceResult();
+        try {
+            HttpURLConnection httpURLConnection = getHttpURLConnection();
+
+            // Check if the response code is 200 (HTTP OK)
+            if (httpURLConnection.getResponseCode() == 200) {
+                // Create an ObjectMapper from Jackson library
+                ObjectMapper objectMapper = new ObjectMapper();
+                priceResult = objectMapper.readValue(httpURLConnection.getInputStream(), PriceResult.class);
+            } else {
+                System.err.println("HTTP Error: " + httpURLConnection.getResponseCode() + " " + httpURLConnection.getResponseMessage());
+            }
+
+            // Close the connection
+            httpURLConnection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return priceResult;
+    }
+
+    private static HttpURLConnection getHttpURLConnection() throws IOException {
+        String baseUrl = "https://sbccruncher.cc/api/prices?platform=pc&datasource=futbin";
+
+        URL url = new URL(baseUrl);
+
+        // Open a connection to the URL
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+        // Set request method and other properties if needed
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0;Win64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36");
+
+        // Connect to the URL
+        httpURLConnection.connect();
+        return httpURLConnection;
     }
 
     public PlayerCard getCardData(CardInput cardInput) throws IOException {

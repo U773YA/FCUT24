@@ -5,10 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2921b959-f1f4-4e6e-8a66-148f8331c308" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/FUTDraft.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/DraftInput.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/PriceResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/RatingPrices.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/playerCardEvoList.json" beforeDir="false" afterPath="$PROJECT_DIR$/playerCardEvoList.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/playerCardMap.json" beforeDir="false" afterPath="$PROJECT_DIR$/playerCardMap.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/FriendlySquadBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/FriendlySquadBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SquadBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SquadBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/PlayerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/PlayerCard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/util/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/util/InputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/util/Scraper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/util/Scraper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +28,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -53,7 +63,7 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.FriendlySquadBuilder">
+  <component name="RunManager" selected="Application.SquadBuilder">
     <configuration name="FodderCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.FodderCalculator" />
       <module name="FCUT24" />
@@ -107,16 +117,16 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.FriendlySquadBuilder" />
       <item itemvalue="Application.FodderCalculator" />
+      <item itemvalue="Application.FriendlySquadBuilder" />
       <item itemvalue="Application.Main" />
       <item itemvalue="Application.SquadBuilder" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.FriendlySquadBuilder" />
-        <item itemvalue="Application.FodderCalculator" />
         <item itemvalue="Application.SquadBuilder" />
+        <item itemvalue="Application.FodderCalculator" />
+        <item itemvalue="Application.FriendlySquadBuilder" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -149,7 +159,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/util/Scraper.java</url>
-          <line>113</line>
+          <line>155</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -179,7 +189,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java</url>
-          <line>136</line>
+          <line>135</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -214,18 +224,43 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java</url>
-          <line>118</line>
+          <line>117</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java</url>
-          <line>135</line>
+          <line>134</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/FriendlySquadBuilder.java</url>
           <line>360</line>
           <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java</url>
+          <line>286</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java</url>
+          <line>279</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java</url>
+          <line>284</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java</url>
+          <line>144</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java</url>
+          <line>127</line>
+          <option name="timeStamp" value="61" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

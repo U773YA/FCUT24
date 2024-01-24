@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.example.enums.ChemStyle.GLOVE;
@@ -116,6 +117,7 @@ public class FodderCalculator extends InputData {
                 dbPlayerCardMap.put(playerCard.getKey(), playerCard.getValue());
             }
         }
+//        dbPlayerCardMap.remove(241);
         Gson gson3 = new Gson();
         try (Writer writer = new FileWriter("playerCardMap.json")) {
             gson3.toJson(dbPlayerCardMap, writer);
@@ -132,6 +134,7 @@ public class FodderCalculator extends InputData {
                 dbPlayerCardEvoList.add(playerCard.getValue());
             }
         }
+//        dbPlayerCardEvoList.removeIf(playerCard -> playerCard.getFutBinId() == 42104284);
         Gson gson = new Gson();
         try (Writer writer = new FileWriter("playerCardEvoList.json")) {
             gson.toJson(dbPlayerCardEvoList, writer);
@@ -253,11 +256,11 @@ public class FodderCalculator extends InputData {
         List<PlayerCard> unimportantPlayers = new ArrayList<>();
         for(int i = 99; i >= 1; i--) {
             int finalI = i;
-            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI).collect(Collectors.toList());
-            list.sort(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
+            List<PlayerCard> list = playersToBeThrown.stream().filter(p -> p.getRating() == finalI)
+                    .sorted(Comparator.comparingDouble(objA -> -objA.getMetaInfoList().stream()
                     .mapToDouble(MetaInfo::getMetaRating)
                     .max()
-                    .orElse(Double.NEGATIVE_INFINITY)));
+                    .orElse(Double.NEGATIVE_INFINITY))).toList();
             unimportantPlayers.addAll(list);
         }
         unimportantPlayers.forEach(playerCard -> {
@@ -266,14 +269,22 @@ public class FodderCalculator extends InputData {
         });
 
         double totalMetaRating = 0;
-        for (PlayerCard playerCard : playerCards) {
-            double metaRating = playerCard.getMetaInfoList().stream()
-                    .mapToDouble(MetaInfo::getMetaRating)
-                    .max()
-                    .orElse(Double.NEGATIVE_INFINITY);
-            totalMetaRating += metaRating;
+//        for (PlayerCard playerCard : playerCards) {
+//            double metaRating = playerCard.getMetaInfoList().stream()
+//                    .mapToDouble(MetaInfo::getMetaRating)
+//                    .max()
+//                    .orElse(Double.NEGATIVE_INFINITY);
+//            totalMetaRating += metaRating;
+//        }
+
+        for (Map.Entry<PositionRole, List<CardScore>> scoreList : positionRoleListMap.entrySet()) {
+            AtomicReference<Double> score = new AtomicReference<>((double) 0);
+            scoreList.getValue().forEach(c -> score.updateAndGet(v -> v + c.getScore()));
+            totalMetaRating+= score.get() / scoreList.getValue().size();
         }
-        System.out.println("\nAverage Meta Rating of squad : " + (totalMetaRating / playerCards.size()));
+        System.out.println("\nAverage Meta Rating of squad : " + (totalMetaRating / positionRoleListMap.size()));
+
+//        PriceResult priceResult = scraper.getPriceData();
 
         long elapsedTime = System.nanoTime() - startTime;
         System.out.println("\nTime taken = " + elapsedTime / 1000000000 + " s");
