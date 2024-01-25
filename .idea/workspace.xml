@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2921b959-f1f4-4e6e-8a66-148f8331c308" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/FUTDraft.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/DraftInput.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/PriceResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/RatingPrices.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playerCardEvoList.json" beforeDir="false" afterPath="$PROJECT_DIR$/playerCardEvoList.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/playerCardMap.json" beforeDir="false" afterPath="$PROJECT_DIR$/playerCardMap.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/FodderCalculator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/FriendlySquadBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/FriendlySquadBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/SquadBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/SquadBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/PlayerCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/PlayerCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/VariationTeam.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/util/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/util/InputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/util/Scraper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/util/Scraper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +52,7 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.SquadBuilder">
+  <component name="RunManager" selected="Application.FodderCalculator">
     <configuration name="FodderCalculator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.FodderCalculator" />
       <module name="FCUT24" />
@@ -124,8 +113,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SquadBuilder" />
         <item itemvalue="Application.FodderCalculator" />
+        <item itemvalue="Application.SquadBuilder" />
         <item itemvalue="Application.FriendlySquadBuilder" />
         <item itemvalue="Application.Main" />
       </list>
